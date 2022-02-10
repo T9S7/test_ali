@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.WechatUnifiedOrderInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.WechatUnifiedOrderInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="orderSn" jdbcType="VARCHAR" column="order_sn"/>
+        <result property="appId" jdbcType="VARCHAR" column="app_id"/>
+        <result property="partnerId" jdbcType="VARCHAR" column="partner_id"/>
+        <result property="prepayId" jdbcType="VARCHAR" column="prepay_id"/>
+        <result property="packageStr" jdbcType="VARCHAR" column="package_str"/>
+        <result property="nonceStr" jdbcType="VARCHAR" column="nonce_str"/>
+        <result property="timeStamp" jdbcType="VARCHAR" column="time_stamp"/>
+        <result property="sign" jdbcType="VARCHAR" column="sign"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,order_sn,app_id,partner_id,prepay_id,package_str,nonce_str,time_stamp,sign,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.WechatUnifiedOrderInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_unified_order_info
+		(order_sn,app_id,partner_id,prepay_id,package_str,nonce_str,time_stamp,sign,create_time,update_time,is_del)
+		values (
+		#{orderSn,jdbcType=VARCHAR},
+		#{appId,jdbcType=VARCHAR},
+		#{partnerId,jdbcType=VARCHAR},
+		#{prepayId,jdbcType=VARCHAR},
+		#{packageStr,jdbcType=VARCHAR},
+		#{nonceStr,jdbcType=VARCHAR},
+		#{timeStamp,jdbcType=VARCHAR},
+		#{sign,jdbcType=VARCHAR},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.WechatUnifiedOrderInfo" >
+		update wechat_unified_order_info
+		<set>
+			order_sn = #{orderSn,jdbcType=VARCHAR},
+			app_id = #{appId,jdbcType=VARCHAR},
+			partner_id = #{partnerId,jdbcType=VARCHAR},
+			prepay_id = #{prepayId,jdbcType=VARCHAR},
+			package_str = #{packageStr,jdbcType=VARCHAR},
+			nonce_str = #{nonceStr,jdbcType=VARCHAR},
+			time_stamp = #{timeStamp,jdbcType=VARCHAR},
+			sign = #{sign,jdbcType=VARCHAR},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.WechatUnifiedOrderInfo" >
+		update wechat_unified_order_info
+		<set>
+			<if test="orderSn != null">
+				order_sn = #{orderSn,jdbcType=VARCHAR},
+			</if>
+			<if test="appId != null">
+				app_id = #{appId,jdbcType=VARCHAR},
+			</if>
+			<if test="partnerId != null">
+				partner_id = #{partnerId,jdbcType=VARCHAR},
+			</if>
+			<if test="prepayId != null">
+				prepay_id = #{prepayId,jdbcType=VARCHAR},
+			</if>
+			<if test="packageStr != null">
+				package_str = #{packageStr,jdbcType=VARCHAR},
+			</if>
+			<if test="nonceStr != null">
+				nonce_str = #{nonceStr,jdbcType=VARCHAR},
+			</if>
+			<if test="timeStamp != null">
+				time_stamp = #{timeStamp,jdbcType=VARCHAR},
+			</if>
+			<if test="sign != null">
+				sign = #{sign,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from wechat_unified_order_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from wechat_unified_order_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from wechat_unified_order_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="orderSn != null and orderSn != ''">
+				and order_sn = #{orderSn}
+			</if>
+			<if test="appId != null and appId != ''">
+				and app_id = #{appId}
+			</if>
+			<if test="partnerId != null and partnerId != ''">
+				and partner_id = #{partnerId}
+			</if>
+			<if test="prepayId != null and prepayId != ''">
+				and prepay_id = #{prepayId}
+			</if>
+			<if test="packageStr != null and packageStr != ''">
+				and package_str = #{packageStr}
+			</if>
+			<if test="nonceStr != null and nonceStr != ''">
+				and nonce_str = #{nonceStr}
+			</if>
+			<if test="timeStamp != null and timeStamp != ''">
+				and time_stamp = #{timeStamp}
+			</if>
+			<if test="sign != null and sign != ''">
+				and sign = #{sign}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'orderSn'">
+				order_sn ${orderSort}
+				</if>
+		    	<if test="orderBy == 'appId'">
+				app_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'partnerId'">
+				partner_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'prepayId'">
+				prepay_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'packageStr'">
+				package_str ${orderSort}
+				</if>
+		    	<if test="orderBy == 'nonceStr'">
+				nonce_str ${orderSort}
+				</if>
+		    	<if test="orderBy == 'timeStamp'">
+				time_stamp ${orderSort}
+				</if>
+		    	<if test="orderBy == 'sign'">
+				sign ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

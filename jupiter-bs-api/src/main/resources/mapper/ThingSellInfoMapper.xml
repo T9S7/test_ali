@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.ThingSellInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.ThingSellInfo">
+        <result property="id" jdbcType="BIGINT" column="id"/>
+        <result property="thingId" jdbcType="BIGINT" column="thing_id"/>
+        <result property="sellType" jdbcType="INTEGER" column="sell_type"/>
+        <result property="sellerInfo" jdbcType="VARCHAR" column="seller_info"/>
+        <result property="thingPrice" jdbcType="BIGINT" column="thing_price"/>
+        <result property="sellerPrice" jdbcType="BIGINT" column="seller_price"/>
+        <result property="margin" jdbcType="BIGINT" column="margin"/>
+        <result property="sellStartPrice" jdbcType="BIGINT" column="sell_start_price"/>
+        <result property="sellAddPrice" jdbcType="BIGINT" column="sell_add_price"/>
+        <result property="auctionStartTime" jdbcType="BIGINT" column="auction_start_time"/>
+        <result property="auctionEndTime" jdbcType="BIGINT" column="auction_end_time"/>
+		<result property="putOn" jdbcType="BIT" column="put_on"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,thing_id,sell_type,seller_info,thing_price,seller_price,margin,sell_start_price,sell_add_price,auction_start_time,auction_end_time,put_on,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.ThingSellInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into thing_sell_info
+		(thing_id,sell_type,seller_info,thing_price,seller_price,margin,sell_start_price,sell_add_price,auction_start_time,auction_end_time,put_on,create_time,update_time,is_del)
+		values (
+		#{thingId,jdbcType=BIGINT},
+		#{sellType,jdbcType=INTEGER},
+		#{sellerInfo,jdbcType=VARCHAR},
+		#{thingPrice,jdbcType=BIGINT},
+		#{sellerPrice,jdbcType=BIGINT},
+		#{margin,jdbcType=BIGINT},
+		#{sellStartPrice,jdbcType=BIGINT},
+		#{sellAddPrice,jdbcType=BIGINT},
+		#{auctionStartTime,jdbcType=BIGINT},
+		#{auctionEndTime,jdbcType=BIGINT},
+		#{putOn,jdbcType=BIT},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.ThingSellInfo" >
+		update thing_sell_info
+		<set>
+			thing_id = #{thingId,jdbcType=BIGINT},
+			sell_type = #{sellType,jdbcType=INTEGER},
+			seller_info = #{sellerInfo,jdbcType=VARCHAR},
+			thing_price = #{thingPrice,jdbcType=BIGINT},
+			seller_price = #{sellerPrice,jdbcType=BIGINT},
+			margin = #{margin,jdbcType=BIGINT},
+			sell_start_price = #{sellStartPrice,jdbcType=BIGINT},
+			sell_add_price = #{sellAddPrice,jdbcType=BIGINT},
+			auction_start_time = #{auctionStartTime,jdbcType=BIGINT},
+			auction_end_time = #{auctionEndTime,jdbcType=BIGINT},
+			put_on = #{putOn,jdbcType=BIT},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.ThingSellInfo" >
+		update thing_sell_info
+		<set>
+			<if test="thingId != null">
+				thing_id = #{thingId,jdbcType=BIGINT},
+			</if>
+			<if test="sellType != null">
+				sell_type = #{sellType,jdbcType=INTEGER},
+			</if>
+			<if test="sellerInfo != null">
+				seller_info = #{sellerInfo,jdbcType=VARCHAR},
+			</if>
+			<if test="thingPrice != null">
+				thing_price = #{thingPrice,jdbcType=BIGINT},
+			</if>
+			<if test="sellerPrice != null">
+				seller_price = #{sellerPrice,jdbcType=BIGINT},
+			</if>
+			<if test="margin != null">
+				margin = #{margin,jdbcType=BIGINT},
+			</if>
+			<if test="sellStartPrice != null">
+				sell_start_price = #{sellStartPrice,jdbcType=BIGINT},
+			</if>
+			<if test="sellAddPrice != null">
+				sell_add_price = #{sellAddPrice,jdbcType=BIGINT},
+			</if>
+			<if test="auctionStartTime != null">
+				auction_start_time = #{auctionStartTime,jdbcType=BIGINT},
+			</if>
+			<if test="auctionEndTime != null">
+				auction_end_time = #{auctionEndTime,jdbcType=BIGINT},
+			</if>
+			<if test="putOn != null">
+				put_on = #{putOn,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_sell_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from thing_sell_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_sell_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+
+	<select id="selectByThingId" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_sell_info
+		where thing_id = #{thingId} and is_del =0 and put_on = 1
+	</select>
+
+	<update id="thingPutOff" parameterType="java.lang.Long">
+		update thing_sell_info set put_on = 0
+		where thing_id = #{thingId} and is_del = 0
+	</update>
+
+	<select id="putOnCount" resultType="java.lang.Integer">
+		SELECT count(1) FROM thing_info t
+		INNER JOIN thing_sell_info t1 on t.id = t1.thing_id and t1.is_del = 0 and t.is_del = 0 and t1.put_on =1
+		where t.user_id = #{userId}
+  	</select>
+
+	<update id="thingPutOn" parameterType="java.lang.Long">
+		update thing_sell_info set put_on = 1
+		where thing_id = #{thingId} and is_del = 0
+	</update>
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="thingId != null">
+				and thing_id = #{thingId}
+			</if>
+			<if test="sellType != null">
+				and sell_type = #{sellType}
+			</if>
+			<if test="sellerInfo != null and sellerInfo != ''">
+				and seller_info = #{sellerInfo}
+			</if>
+			<if test="thingPrice != null">
+				and thing_price = #{thingPrice}
+			</if>
+			<if test="sellerPrice != null">
+				and seller_price = #{sellerPrice}
+			</if>
+			<if test="margin != null">
+				and margin = #{margin}
+			</if>
+			<if test="sellStartPrice != null">
+				and sell_start_price = #{sellStartPrice}
+			</if>
+			<if test="sellAddPrice != null">
+				and sell_add_price = #{sellAddPrice}
+			</if>
+			<if test="auctionStartTime != null">
+				and auction_start_time = #{auctionStartTime}
+			</if>
+			<if test="auctionEndTime != null">
+				and auction_end_time = #{auctionEndTime}
+			</if>
+			<if test="putOn != null">
+				and put_on = #{putOn}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingId'">
+				thing_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'sellType'">
+				sell_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'sellerInfo'">
+				seller_info ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingPrice'">
+				thing_price ${orderSort}
+				</if>
+		    	<if test="orderBy == 'sellerPrice'">
+				seller_price ${orderSort}
+				</if>
+		    	<if test="orderBy == 'margin'">
+				margin ${orderSort}
+				</if>
+		    	<if test="orderBy == 'sellStartPrice'">
+				sell_start_price ${orderSort}
+				</if>
+		    	<if test="orderBy == 'sellAddPrice'">
+				sell_add_price ${orderSort}
+				</if>
+		    	<if test="orderBy == 'auctionStartTime'">
+				auction_start_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'auctionEndTime'">
+				auction_end_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

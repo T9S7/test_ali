@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.SysRoleMapper">
+
+    <resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.SysRole">
+        <result property="roleId" jdbcType="INTEGER" column="role_id"/>
+        <result property="roleName" jdbcType="VARCHAR" column="role_name"/>
+        <result property="roleType" jdbcType="TINYINT" column="role_type"/>
+        <result property="roleDesc" jdbcType="VARCHAR" column="role_desc"/>
+        <result property="roleLevel" jdbcType="TINYINT" column="role_level"/>
+        <result property="isEnable" jdbcType="BIT" column="is_enable"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+	    <![CDATA[
+        role_id,
+        role_name,
+        role_type,
+        role_desc,
+        role_level,
+        is_enable,
+        is_del,
+        create_time,
+        update_time
+        ]]>
+	</sql>
+    <!-- 插入数据 -->
+    <insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.SysRole" useGeneratedKeys="true" keyProperty="roleId">
+        insert into sys_role
+        (role_name, role_type, role_desc, role_level, is_enable, is_del, create_time, update_time)
+        values (#{roleName,jdbcType=VARCHAR},
+                #{roleType,jdbcType=TINYINT},
+                #{roleDesc,jdbcType=VARCHAR},
+                #{roleLevel,jdbcType=TINYINT},
+                #{isEnable,jdbcType=BIT},
+                #{isDel,jdbcType=BIT},
+                #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT})
+    </insert>
+    <!-- 更新数据 包含null-->
+    <update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.SysRole">
+        update sys_role
+        <set>
+            role_name = #{roleName,jdbcType=VARCHAR},
+            role_type = #{roleType,jdbcType=TINYINT},
+            role_desc = #{roleDesc,jdbcType=VARCHAR},
+            role_level = #{roleLevel,jdbcType=TINYINT},
+            is_enable = #{isEnable,jdbcType=BIT},
+            is_del = #{isDel,jdbcType=BIT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        </set>
+        WHERE role_id = #{roleId}
+    </update>
+    <!-- 更新数据，不包含null -->
+    <update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.SysRole">
+        update sys_role
+        <set>
+            <if test="roleName != null">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleType != null">
+                role_type = #{roleType,jdbcType=TINYINT},
+            </if>
+            <if test="roleDesc != null">
+                role_desc = #{roleDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="roleLevel != null">
+                role_level = #{roleLevel,jdbcType=TINYINT},
+            </if>
+            <if test="isEnable != null">
+                is_enable = #{isEnable,jdbcType=BIT},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT}
+            </if>
+        </set>
+        WHERE role_id = #{roleId}
+    </update>
+
+    <!-- 角色名称条件查询 -->
+    <select id="selectByName" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_role
+        WHERE is_del = 0 and role_name = #{roleName}
+    </select>
+
+    <!-- 角色类型条件查询 -->
+    <select id="selectByType" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_role
+        WHERE is_del = 0 and role_type = #{roleTame}
+    </select>
+
+    <!-- 主键条件查询 -->
+    <select id="selectById" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_role
+        WHERE is_del = 0 and role_id = #{roleId}
+    </select>
+
+    <!-- 列表条件查询count -->
+    <select id="selectList_COUNT" resultType="java.lang.Long">
+        SELECT count(*)
+        FROM sys_role
+        <include refid="whereSql"/>
+    </select>
+
+    <!-- 列表条件查询 -->
+    <select id="selectList" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_role
+        <include refid="whereSql"/>
+        <include refid="orderSql"/>
+    </select>
+
+    <sql id="whereSql">
+        <where>
+            <if test="roleId != null">
+                AND role_id = #{roleId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                AND role_name like concat('%',#{roleName},'%')
+            </if>
+            <if test="roleType != null">
+                AND role_type = #{roleType}
+            </if>
+            <if test="roleDesc != null and roleDesc != ''">
+                AND role_desc = #{roleDesc}
+            </if>
+            <if test="isDel != null">
+                AND is_del = #{isDel}
+            </if>
+        </where>
+    </sql>
+    <sql id="orderSql">
+        <choose>
+            <when test="orderBy != null and orderBy != ''">
+                order by
+                <if test="orderBy == 'roleId'">
+                    role_id ${orderSort}
+                </if>
+                <if test="orderBy == 'roleName'">
+                    role_name ${orderSort}
+                </if>
+                <if test="orderBy == 'roleType'">
+                    role_type ${orderSort}
+                </if>
+                <if test="orderBy == 'roleDesc'">
+                    role_desc ${orderSort}
+                </if>
+                <if test="orderBy == 'roleLevel'">
+                    role_level ${orderSort}
+                </if>
+                <if test="orderBy == 'isEnable'">
+                    is_enable ${orderSort}
+                </if>
+                <if test="orderBy == 'isDel'">
+                    is_del ${orderSort}
+                </if>
+                <if test="orderBy == 'createTime'">
+                    create_time ${orderSort}
+                </if>
+                <if test="orderBy == 'updateTime'">
+                    update_time ${orderSort}
+                </if>
+            </when>
+            <otherwise>
+                order by create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+</mapper>
+

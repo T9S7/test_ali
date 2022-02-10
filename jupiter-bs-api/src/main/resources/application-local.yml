@@ -1,0 +1,124 @@
+server:
+  port: 9999
+  tomcat:
+    connection-timeout: 2M
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/jupiter_new?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root123
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+  redis:
+    host: 121.40.254.174
+    port: 6379
+    password: aszz2021
+    database: 10
+    lettuce:
+      pool:
+        max-active: 8
+        min-idle: 0
+        max-idle: 8
+        max-wait: 5S
+aliyun:
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com # oss对外服务的访问域名
+    internal-endpoint: oss-cn-hangzhou.aliyuncs.com
+    access-key-id: LTAI4Fz66qrCHwdftTuqxJa1 # 访问身份验证中用到用户标识
+    access-key-secret: ZHrriE7nZEXpuLChvoVNfBFqCEDkLU # 用户用于加密签名字符串和oss用来验证签名字符串的密钥
+    duration-seconds: 900 #The Min/Max value of DurationSeconds is 900/3600
+    region: cn-hangzhou
+    role-arn: acs:ram::1997929024133669:role/ramosstest
+    avatar-bucket-name: jupiter-avatar-bucket
+    app-package-bucket-name: jupiter-app-package
+  sms:
+    endpoint: dysmsapi.aliyuncs.com # oss对外服务的访问域名
+    access-key-id: LTAI4Fz66qrCHwdftTuqxJa1 # 访问身份验证中用到用户标识
+    access-key-secret: ZHrriE7nZEXpuLChvoVNfBFqCEDkLU # 用户用于加密签名字符串和oss用来验证签名字符串的密钥
+    region: cn-hangzhou
+    sign-name: 安时智造
+    register-template-code: SMS_152289963
+    auth-template-code: SMS_151565054
+    admin-register-template-code: SMS_215071400
+    duration-time: 600 #in seconds
+  mobile-verify:
+    endpoint: dypnsapi.aliyuncs.com
+    access-key-id: LTAI4Fz66qrCHwdftTuqxJa1
+    access-key-secret: ZHrriE7nZEXpuLChvoVNfBFqCEDkLU
+logging:
+  level:
+    root: info
+    com.armsmart.jupiter.bs.dao: debug
+  config: classpath:logback.xml
+secure:
+  ignored:
+    urls: #安全路径白名单
+      - /swagger-ui.html
+      - /swagger-resources/**
+      - /doc.html
+      - /swagger/**
+      - /**/v2/api-docs
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.ico
+      - /webjars/springfox-swagger-ui/**
+      - /actuator/**
+      - /druid/**
+      - /sysUser/login
+      - /sysUser/verifyCodeLogin
+      - /sysUser/getAuthVerifyCode
+      - /sysUser/add
+      - /userAuth/mobileVerifyLogin
+      - /userAuth/mobileLogin
+      - /userAuth/verifyCodeLogin
+      - /userAuth/register
+      - /userAuth/verifyCode
+      - /userAuth/getAuthVerifyCode
+      - /userAuth/checkAuthVerifyCode
+      - /userAuth/resetPwd
+      - /goodInfo/selectPage
+      - /goodInfo/selectById
+      - /thingInfo/selectById/**
+      - /launch/**
+      - /discovery/**
+block-chain:
+  url: http://172.16.113.164:3000
+  timeout: 120000
+  topic:
+    #鉴权主题
+    auth: nft-auth
+    #确认主题
+    identify: nft-identify
+    #交易主题
+    transaction: transaction
+    #区块链一般操作主题
+    common: eth-common
+    #鉴权结果主题
+    auth-result: nft-auth-result
+    #确认结果主题
+    identify-result: nft-identify-result
+    #交易结果主题
+    transaction-result: transaction-result
+    #区块链一般操作结果主题
+    common-result: eth-common-result
+    #主题消费分组
+    platform-to-chain-group: all-consumer-group
+    #全部结果主题
+    all-result: ${block-chain.topic.auth-result},${block-chain.topic.identify-result},${block-chain.topic.transaction-result},${block-chain.topic.common-result},${block-chain.topic.demo-result}
+    #测试topic
+    demo: demo
+    #测试返回topic
+    demo-result: demo-result
+
+
+
+
+

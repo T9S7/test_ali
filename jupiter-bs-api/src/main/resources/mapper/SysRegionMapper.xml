@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.SysRegionMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.SysRegion">
+        <result property="id" jdbcType="INTEGER" column="ID"/>
+        <result property="regionName" jdbcType="VARCHAR" column="REGION_NAME"/>
+        <result property="regionParent" jdbcType="INTEGER" column="REGION_PARENT"/>
+        <result property="latitude" jdbcType="VARCHAR" column="LATITUDE"/>
+        <result property="longitude" jdbcType="VARCHAR" column="LONGITUDE"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		ID,REGION_NAME,REGION_PARENT,LATITUDE,LONGITUDE
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.SysRegion" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_region
+		(REGION_NAME,REGION_PARENT,LATITUDE,LONGITUDE)
+		values (
+		#{regionName,jdbcType=VARCHAR},
+		#{regionParent,jdbcType=INTEGER},
+		#{latitude,jdbcType=VARCHAR},
+		#{longitude,jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.SysRegion" >
+		update sys_region
+		<set>
+			REGION_NAME = #{regionName,jdbcType=VARCHAR},
+			REGION_PARENT = #{regionParent,jdbcType=INTEGER},
+			LATITUDE = #{latitude,jdbcType=VARCHAR},
+			LONGITUDE = #{longitude,jdbcType=VARCHAR}
+		</set>
+		WHERE ID = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.SysRegion" >
+		update sys_region
+		<set>
+			<if test="regionName != null">
+				REGION_NAME = #{regionName,jdbcType=VARCHAR},
+			</if>
+			<if test="regionParent != null">
+				REGION_PARENT = #{regionParent,jdbcType=INTEGER},
+			</if>
+			<if test="latitude != null">
+				LATITUDE = #{latitude,jdbcType=VARCHAR},
+			</if>
+			<if test="longitude != null">
+				LONGITUDE = #{longitude,jdbcType=VARCHAR}
+			</if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectByParent" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from sys_region
+		WHERE REGION_PARENT = #{regionParent}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectByParent_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from sys_region
+		WHERE REGION_PARENT = #{regionParent}
+	</select>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from sys_region
+		WHERE ID = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from sys_region
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from sys_region
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and ID = #{id}
+			</if>
+			<if test="regionName != null and regionName != ''">
+				and REGION_NAME = #{regionName}
+			</if>
+			<if test="regionParent != null">
+				and REGION_PARENT = #{regionParent}
+			</if>
+			<if test="latitude != null and latitude != ''">
+				and LATITUDE = #{latitude}
+			</if>
+			<if test="longitude != null and longitude != ''">
+				and LONGITUDE = #{longitude}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				ID ${orderSort}
+				</if>
+		    	<if test="orderBy == 'regionName'">
+				REGION_NAME ${orderSort}
+				</if>
+		    	<if test="orderBy == 'regionParent'">
+				REGION_PARENT ${orderSort}
+				</if>
+		    	<if test="orderBy == 'latitude'">
+				LATITUDE ${orderSort}
+				</if>
+		    	<if test="orderBy == 'longitude'">
+				LONGITUDE ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

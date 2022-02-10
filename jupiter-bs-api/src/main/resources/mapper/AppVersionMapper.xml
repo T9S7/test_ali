@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.AppVersionMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.AppVersion">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="platform" jdbcType="INTEGER" column="platform"/>
+        <result property="isForceUpdate" jdbcType="BIT" column="is_force_update"/>
+        <result property="versionCode" jdbcType="INTEGER" column="version_code"/>
+        <result property="versionNum" jdbcType="VARCHAR" column="version_num"/>
+        <result property="versionDes" jdbcType="VARCHAR" column="version_des"/>
+        <result property="downloadUrl" jdbcType="VARCHAR" column="download_url"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,platform,is_force_update,version_code,version_num,version_des,download_url,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.AppVersion" useGeneratedKeys="true" keyProperty="id">
+		insert into app_version
+		(platform,is_force_update,version_code,version_num,version_des,download_url,create_time,update_time,is_del)
+		values (
+		#{platform,jdbcType=INTEGER},
+		#{isForceUpdate,jdbcType=BIT},
+		#{versionCode,jdbcType=INTEGER},
+		#{versionNum,jdbcType=VARCHAR},
+		#{versionDes,jdbcType=VARCHAR},
+		#{downloadUrl,jdbcType=VARCHAR},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.AppVersion" >
+		update app_version
+		<set>
+			platform = #{platform,jdbcType=INTEGER},
+			is_force_update = #{isForceUpdate,jdbcType=BIT},
+			version_code = #{versionCode,jdbcType=INTEGER},
+			version_num = #{versionNum,jdbcType=VARCHAR},
+			version_des = #{versionDes,jdbcType=VARCHAR},
+			download_url = #{downloadUrl,jdbcType=VARCHAR},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.AppVersion" >
+		update app_version
+		<set>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=INTEGER},
+			</if>
+			<if test="isForceUpdate != null">
+				is_force_update = #{isForceUpdate,jdbcType=BIT},
+			</if>
+			<if test="versionCode != null">
+				version_code = #{versionCode,jdbcType=VARCHAR},
+			</if>
+			<if test="versionNum != null">
+				version_num = #{versionNum,jdbcType=VARCHAR},
+			</if>
+			<if test="versionDes != null">
+				version_des = #{versionDes,jdbcType=VARCHAR},
+			</if>
+			<if test="downloadUrl != null">
+				download_url = #{downloadUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from app_version
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from app_version
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from app_version
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+
+	<select id="getLatestVersion" resultMap="baseResultMap">
+		select t.* from app_version t where t.platform = #{platform}
+			order by version_code desc
+		limit 1
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="platform != null">
+				and platform = #{platform}
+			</if>
+			<if test="isForceUpdate != null">
+				and is_force_update = #{isForceUpdate}
+			</if>
+			<if test="versionNum != null and versionNum != ''">
+				and version_num = #{versionNum}
+			</if>
+			<if test="versionDes != null and versionDes != ''">
+				and version_des = #{versionDes}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'platform'">
+				platform ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isForceUpdate'">
+				is_force_update ${orderSort}
+				</if>
+		    	<if test="orderBy == 'versionNum'">
+				version_num ${orderSort}
+				</if>
+		    	<if test="orderBy == 'versionDes'">
+				version_des ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

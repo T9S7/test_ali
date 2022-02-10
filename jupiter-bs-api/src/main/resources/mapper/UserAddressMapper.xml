@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.UserAddressMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.UserAddress">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="name" jdbcType="VARCHAR" column="name"/>
+        <result property="mobile" jdbcType="VARCHAR" column="mobile"/>
+        <result property="addressLabel" jdbcType="VARCHAR" column="address_label"/>
+        <result property="province" jdbcType="VARCHAR" column="province"/>
+        <result property="provinceCode" jdbcType="VARCHAR" column="province_code"/>
+        <result property="city" jdbcType="VARCHAR" column="city"/>
+        <result property="cityCode" jdbcType="VARCHAR" column="city_code"/>
+        <result property="district" jdbcType="VARCHAR" column="district"/>
+        <result property="districtCode" jdbcType="VARCHAR" column="district_code"/>
+        <result property="address" jdbcType="VARCHAR" column="address"/>
+        <result property="addressType" jdbcType="INTEGER" column="address_type"/>
+        <result property="postcode" jdbcType="VARCHAR" column="postcode"/>
+        <result property="userId" jdbcType="INTEGER" column="user_id"/>
+        <result property="isDefault" jdbcType="BIT" column="is_default"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,name,mobile,address_label,province,province_code,city,city_code,district,district_code,address,address_type,postcode,user_id,is_default,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.UserAddress" useGeneratedKeys="true" keyProperty="id">
+		insert into user_address
+		(name,mobile,address_label,province,province_code,city,city_code,district,district_code,address,address_type,postcode,user_id,is_default,create_time,update_time,is_del)
+		values (
+		#{name,jdbcType=VARCHAR},
+		#{mobile,jdbcType=VARCHAR},
+		#{addressLabel,jdbcType=VARCHAR},
+		#{province,jdbcType=VARCHAR},
+		#{provinceCode,jdbcType=VARCHAR},
+		#{city,jdbcType=VARCHAR},
+		#{cityCode,jdbcType=VARCHAR},
+		#{district,jdbcType=VARCHAR},
+		#{districtCode,jdbcType=VARCHAR},
+		#{address,jdbcType=VARCHAR},
+		#{addressType,jdbcType=INTEGER},
+		#{postcode,jdbcType=VARCHAR},
+		#{userId,jdbcType=INTEGER},
+		#{isDefault,jdbcType=BIT},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.UserAddress" >
+		update user_address
+		<set>
+			name = #{name,jdbcType=VARCHAR},
+			mobile = #{mobile,jdbcType=VARCHAR},
+			address_label = #{addressLabel,jdbcType=VARCHAR},
+			province = #{province,jdbcType=VARCHAR},
+			province_code = #{provinceCode,jdbcType=VARCHAR},
+			city = #{city,jdbcType=VARCHAR},
+			city_code = #{cityCode,jdbcType=VARCHAR},
+			district = #{district,jdbcType=VARCHAR},
+			district_code = #{districtCode,jdbcType=VARCHAR},
+			address = #{address,jdbcType=VARCHAR},
+			address_type = #{addressType,jdbcType=INTEGER},
+			postcode = #{postcode,jdbcType=VARCHAR},
+			user_id = #{userId,jdbcType=INTEGER},
+			is_default = #{isDefault,jdbcType=BIT},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.UserAddress" >
+		update user_address
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				mobile = #{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="addressLabel != null">
+				address_label = #{addressLabel,jdbcType=VARCHAR},
+			</if>
+			<if test="province != null">
+				province = #{province,jdbcType=VARCHAR},
+			</if>
+			<if test="provinceCode != null">
+				province_code = #{provinceCode,jdbcType=VARCHAR},
+			</if>
+			<if test="city != null">
+				city = #{city,jdbcType=VARCHAR},
+			</if>
+			<if test="cityCode != null">
+				city_code = #{cityCode,jdbcType=VARCHAR},
+			</if>
+			<if test="district != null">
+				district = #{district,jdbcType=VARCHAR},
+			</if>
+			<if test="districtCode != null">
+				district_code = #{districtCode,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="addressType != null">
+				address_type = #{addressType,jdbcType=INTEGER},
+			</if>
+			<if test="postcode != null">
+				postcode = #{postcode,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="isDefault != null">
+				is_default = #{isDefault,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="resetDefault">
+		update user_address
+		set is_default = 0
+		where user_id = #{userId}
+	</update>
+
+	<select id="selectMyDefaultAddr" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_address
+		WHERE  user_id = #{userId} and is_default = 1 limit 1
+	</select>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_address
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from user_address
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_address
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				and name = #{name}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				and mobile = #{mobile}
+			</if>
+			<if test="addressLabel != null and addressLabel != ''">
+				and address_label = #{addressLabel}
+			</if>
+			<if test="province != null and province != ''">
+				and province = #{province}
+			</if>
+			<if test="provinceCode != null and provinceCode != ''">
+				and province_code = #{provinceCode}
+			</if>
+			<if test="city != null and city != ''">
+				and city = #{city}
+			</if>
+			<if test="cityCode != null and cityCode != ''">
+				and city_code = #{cityCode}
+			</if>
+			<if test="district != null and district != ''">
+				and district = #{district}
+			</if>
+			<if test="districtCode != null and districtCode != ''">
+				and district_code = #{districtCode}
+			</if>
+			<if test="address != null and address != ''">
+				and address = #{address}
+			</if>
+			<if test="addressType != null">
+				and address_type = #{addressType}
+			</if>
+			<if test="postcode != null and postcode != ''">
+				and postcode = #{postcode}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="isDefault != null">
+				and is_default = #{isDefault}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'name'">
+				name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'mobile'">
+				mobile ${orderSort}
+				</if>
+		    	<if test="orderBy == 'addressLabel'">
+				address_label ${orderSort}
+				</if>
+		    	<if test="orderBy == 'province'">
+				province ${orderSort}
+				</if>
+		    	<if test="orderBy == 'provinceCode'">
+				province_code ${orderSort}
+				</if>
+		    	<if test="orderBy == 'city'">
+				city ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cityCode'">
+				city_code ${orderSort}
+				</if>
+		    	<if test="orderBy == 'district'">
+				district ${orderSort}
+				</if>
+		    	<if test="orderBy == 'districtCode'">
+				district_code ${orderSort}
+				</if>
+		    	<if test="orderBy == 'address'">
+				address ${orderSort}
+				</if>
+		    	<if test="orderBy == 'addressType'">
+				address_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'postcode'">
+				postcode ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userId'">
+				user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDefault'">
+				is_default ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+			order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

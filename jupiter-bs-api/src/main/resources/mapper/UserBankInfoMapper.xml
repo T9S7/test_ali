@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.UserBankInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.UserBankInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="userId" jdbcType="VARCHAR" column="user_id"/>
+        <result property="bankName" jdbcType="VARCHAR" column="bank_name"/>
+        <result property="bankCode" jdbcType="VARCHAR" column="bank_code"/>
+        <result property="cardNo" jdbcType="VARCHAR" column="card_no"/>
+        <result property="phone" jdbcType="VARCHAR" column="phone"/>
+        <result property="name" jdbcType="VARCHAR" column="name"/>
+        <result property="cardCheck" jdbcType="BIGINT" column="card_check"/>
+        <result property="identityNo" jdbcType="VARCHAR" column="identity_no"/>
+        <result property="validate" jdbcType="VARCHAR" column="validate"/>
+        <result property="cvv2" jdbcType="VARCHAR" column="cvv2"/>
+        <result property="unionBank" jdbcType="VARCHAR" column="union_bank"/>
+        <result property="tranceNum" jdbcType="VARCHAR" column="trance_num"/>
+        <result property="transDate" jdbcType="VARCHAR" column="trans_date"/>
+        <result property="cardType" jdbcType="VARCHAR" column="card_type"/>
+        <result property="agreementNo" jdbcType="VARCHAR" column="agreement_no"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,user_id,bank_name,bank_code,card_no,phone,name,card_check,identity_no,validate,cvv2,union_bank,trance_num,trans_date,card_type,agreement_no,create_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.UserBankInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into user_bank_info
+		(user_id,bank_name,bank_code,card_no,phone,name,card_check,identity_no,validate,cvv2,union_bank,trance_num,trans_date,card_type,agreement_no,create_time,is_del)
+		values (
+		#{userId,jdbcType=VARCHAR},
+		#{bankName,jdbcType=VARCHAR},
+		#{bankCode,jdbcType=VARCHAR},
+		#{cardNo,jdbcType=VARCHAR},
+		#{phone,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR},
+		#{cardCheck,jdbcType=BIGINT},
+		#{identityNo,jdbcType=VARCHAR},
+		#{validate,jdbcType=VARCHAR},
+		#{cvv2,jdbcType=VARCHAR},
+		#{unionBank,jdbcType=VARCHAR},
+		#{tranceNum,jdbcType=VARCHAR},
+		#{transDate,jdbcType=VARCHAR},
+		#{cardType,jdbcType=VARCHAR},
+		#{agreementNo,jdbcType=VARCHAR},
+		#{createTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.UserBankInfo" >
+		update user_bank_info
+		<set>
+			user_id = #{userId,jdbcType=VARCHAR},
+			bank_name = #{bankName,jdbcType=VARCHAR},
+			bank_code = #{bankCode,jdbcType=VARCHAR},
+			card_no = #{cardNo,jdbcType=VARCHAR},
+			phone = #{phone,jdbcType=VARCHAR},
+			name = #{name,jdbcType=VARCHAR},
+			card_check = #{cardCheck,jdbcType=BIGINT},
+			identity_no = #{identityNo,jdbcType=VARCHAR},
+			validate = #{validate,jdbcType=VARCHAR},
+			cvv2 = #{cvv2,jdbcType=VARCHAR},
+			union_bank = #{unionBank,jdbcType=VARCHAR},
+			trance_num = #{tranceNum,jdbcType=VARCHAR},
+			trans_date = #{transDate,jdbcType=VARCHAR},
+			card_type = #{cardType,jdbcType=VARCHAR},
+			agreement_no = #{agreementNo,jdbcType=VARCHAR},
+			create_time = #{createTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.UserBankInfo" >
+		update user_bank_info
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="bankName != null">
+				bank_name = #{bankName,jdbcType=VARCHAR},
+			</if>
+			<if test="bankCode != null">
+				bank_code = #{bankCode,jdbcType=VARCHAR},
+			</if>
+			<if test="cardNo != null">
+				card_no = #{cardNo,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="cardCheck != null">
+				card_check = #{cardCheck,jdbcType=BIGINT},
+			</if>
+			<if test="identityNo != null">
+				identity_no = #{identityNo,jdbcType=VARCHAR},
+			</if>
+			<if test="validate != null">
+				validate = #{validate,jdbcType=VARCHAR},
+			</if>
+			<if test="cvv2 != null">
+				cvv2 = #{cvv2,jdbcType=VARCHAR},
+			</if>
+			<if test="unionBank != null">
+				union_bank = #{unionBank,jdbcType=VARCHAR},
+			</if>
+			<if test="tranceNum != null">
+				trance_num = #{tranceNum,jdbcType=VARCHAR},
+			</if>
+			<if test="transDate != null">
+				trans_date = #{transDate,jdbcType=VARCHAR},
+			</if>
+			<if test="cardType != null">
+				card_type = #{cardType,jdbcType=VARCHAR},
+			</if>
+			<if test="agreementNo != null">
+				agreement_no = #{agreementNo,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_bank_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 通联流水号查询 -->
+	<select id="selectByTrance" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_bank_info
+		WHERE trance_num = #{tranceNum}
+	</select>
+
+	<!-- 银行卡号查询 -->
+	<select id="selectByCardNo" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_bank_info
+		WHERE card_no = #{cardNo}
+			AND user_id = #{userId}
+			and is_del = 0
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from user_bank_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_bank_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				and user_id = #{userId}
+			</if>
+			<if test="bankName != null and bankName != ''">
+				and bank_name = #{bankName}
+			</if>
+			<if test="bankCode != null and bankCode != ''">
+				and bank_code = #{bankCode}
+			</if>
+			<if test="cardNo != null and cardNo != ''">
+				and card_no = #{cardNo}
+			</if>
+			<if test="phone != null and phone != ''">
+				and phone = #{phone}
+			</if>
+			<if test="name != null and name != ''">
+				and name = #{name}
+			</if>
+			<if test="cardCheck != null">
+				and card_check = #{cardCheck}
+			</if>
+			<if test="identityNo != null and identityNo != ''">
+				and identity_no = #{identityNo}
+			</if>
+			<if test="validate != null and validate != ''">
+				and validate = #{validate}
+			</if>
+			<if test="cvv2 != null and cvv2 != ''">
+				and cvv2 = #{cvv2}
+			</if>
+			<if test="unionBank != null and unionBank != ''">
+				and union_bank = #{unionBank}
+			</if>
+			<if test="tranceNum != null and tranceNum != ''">
+				and trance_num = #{tranceNum}
+			</if>
+			<if test="transDate != null and transDate != ''">
+				and trans_date = #{transDate}
+			</if>
+			<if test="cardType != null and cardType != ''">
+				and card_type = #{cardType}
+			</if>
+			<if test="agreementNo != null and agreementNo != ''">
+				and agreement_no = #{agreementNo}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userId'">
+				user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'bankName'">
+				bank_name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'bankCode'">
+				bank_code ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cardNo'">
+				card_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'phone'">
+				phone ${orderSort}
+				</if>
+		    	<if test="orderBy == 'name'">
+				name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cardCheck'">
+				card_check ${orderSort}
+				</if>
+		    	<if test="orderBy == 'identityNo'">
+				identity_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'validate'">
+				validate ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cvv2'">
+				cvv2 ${orderSort}
+				</if>
+		    	<if test="orderBy == 'unionBank'">
+				union_bank ${orderSort}
+				</if>
+		    	<if test="orderBy == 'tranceNum'">
+				trance_num ${orderSort}
+				</if>
+		    	<if test="orderBy == 'transDate'">
+				trans_date ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cardType'">
+				card_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'agreementNo'">
+				agreement_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

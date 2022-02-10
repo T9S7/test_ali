@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.CompanyInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.CompanyInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="companyName" jdbcType="VARCHAR" column="company_name"/>
+        <result property="companyDesc" jdbcType="VARCHAR" column="company_desc"/>
+        <result property="companyType" jdbcType="INTEGER" column="company_type"/>
+        <result property="companyUrl" jdbcType="VARCHAR" column="company_url"/>
+        <result property="isOfficial" jdbcType="BIT" column="is_official"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,company_name,company_desc,company_type,company_url,is_official,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.CompanyInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into company_info
+		(company_name,company_desc,company_type,company_url,is_official,create_time,update_time,is_del)
+		values (
+		#{companyName,jdbcType=VARCHAR},
+		#{companyDesc,jdbcType=VARCHAR},
+		#{companyType,jdbcType=INTEGER},
+		#{companyUrl,jdbcType=VARCHAR},
+		#{isOfficial,jdbcType=BIT},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.CompanyInfo" >
+		update company_info
+		<set>
+			company_name = #{companyName,jdbcType=VARCHAR},
+			company_desc = #{companyDesc,jdbcType=VARCHAR},
+			company_type = #{companyType,jdbcType=INTEGER},
+			company_url = #{companyUrl,jdbcType=VARCHAR},
+			is_official = #{isOfficial,jdbcType=BIT},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.CompanyInfo" >
+		update company_info
+		<set>
+			<if test="companyName != null">
+				company_name = #{companyName,jdbcType=VARCHAR},
+			</if>
+			<if test="companyDesc != null">
+				company_desc = #{companyDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="companyType != null">
+				company_type = #{companyType,jdbcType=INTEGER},
+			</if>
+			<if test="companyUrl != null">
+				company_url = #{companyUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="isOfficial != null">
+				is_official = #{isOfficial,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from company_info
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectByName" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from company_info
+		WHERE company_name = #{companyName}
+		and is_del = 0
+	</select>
+
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from company_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from company_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="companyName != null and companyName != ''">
+				and company_name = #{companyName}
+			</if>
+			<if test="companyDesc != null and companyDesc != ''">
+				and company_desc = #{companyDesc}
+			</if>
+			<if test="companyType != null">
+				and company_type = #{companyType}
+			</if>
+			<if test="companyUrl != null and companyUrl != ''">
+				and company_url = #{companyUrl}
+			</if>
+			<if test="isOfficial != null">
+				and is_official = #{isOfficial}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'companyName'">
+				company_name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'companyDesc'">
+				company_desc ${orderSort}
+				</if>
+		    	<if test="orderBy == 'companyType'">
+				company_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'companyUrl'">
+				company_url ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isOfficial'">
+				is_official ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

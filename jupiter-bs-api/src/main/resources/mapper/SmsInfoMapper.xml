@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.SmsInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.SmsInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="mobile" jdbcType="VARCHAR" column="mobile"/>
+        <result property="smsType" jdbcType="INTEGER" column="sms_type"/>
+        <result property="verifyCode" jdbcType="VARCHAR" column="verify_code"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="expireTime" jdbcType="BIGINT" column="expire_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,mobile,sms_type,verify_code,create_time,expire_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.SmsInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into sms_info
+		(mobile,sms_type,verify_code,create_time,expire_time,is_del)
+		values (
+		#{mobile,jdbcType=VARCHAR},
+		#{smsType,jdbcType=INTEGER},
+		#{verifyCode,jdbcType=VARCHAR},
+		#{createTime,jdbcType=BIGINT},
+		#{expireTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.SmsInfo" >
+		update sms_info
+		<set>
+			mobile = #{mobile,jdbcType=VARCHAR},
+			sms_type = #{smsType,jdbcType=INTEGER},
+			verify_code = #{verifyCode,jdbcType=VARCHAR},
+			create_time = #{createTime,jdbcType=BIGINT},
+			expire_time = #{expireTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.SmsInfo" >
+		update sms_info
+		<set>
+			<if test="mobile != null">
+				mobile = #{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="smsType != null">
+				sms_type = #{smsType,jdbcType=INTEGER},
+			</if>
+			<if test="verifyCode != null">
+				verify_code = #{verifyCode,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="expireTime != null">
+				expire_time = #{expireTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<select id="selectLatest" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from sms_info
+		WHERE mobile = #{mobile} and sms_type = #{smsType}
+		order by create_time desc
+		limit 1
+	</select>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from sms_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from sms_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from sms_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				and mobile = #{mobile}
+			</if>
+			<if test="smsType != null">
+				and sms_type = #{smsType}
+			</if>
+			<if test="verifyCode != null and verifyCode != ''">
+				and verify_code = #{verifyCode}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="expireTime != null">
+				and expire_time = #{expireTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'mobile'">
+				mobile ${orderSort}
+				</if>
+		    	<if test="orderBy == 'smsType'">
+				sms_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'verifyCode'">
+				verify_code ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'expireTime'">
+				expire_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

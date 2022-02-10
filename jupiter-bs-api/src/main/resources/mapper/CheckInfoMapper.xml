@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.CheckInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.CheckInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="contractAddr" jdbcType="VARCHAR" column="contract_addr"/>
+        <result property="thingId" jdbcType="BIGINT" column="thing_id"/>
+        <result property="checkType" jdbcType="INTEGER" column="check_type"/>
+        <result property="fileInfo" jdbcType="VARCHAR" column="file_info"/>
+        <result property="userId" jdbcType="INTEGER" column="user_id"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<resultMap id="checkList" type="com.armsmart.jupiter.bs.api.entity.CheckInfo">
+		<result property="id" jdbcType="INTEGER" column="id"/>
+		<result property="contractAddr" jdbcType="VARCHAR" column="contract_addr"/>
+		<result property="thingId" jdbcType="BIGINT" column="thing_id"/>
+		<result property="checkType" jdbcType="INTEGER" column="check_type"/>
+		<result property="fileInfo" jdbcType="VARCHAR" column="file_info"/>
+		<result property="userId" jdbcType="INTEGER" column="user_id"/>
+		<result property="createTime" jdbcType="BIGINT" column="create_time"/>
+		<result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+		<result property="isDel" jdbcType="BIT" column="is_del"/>
+		<collection property="pics" column="thingId" ofType="com.armsmart.jupiter.bs.api.entity.ThingPicInfo"
+					select="selectArtPicInfos"/>
+	</resultMap>
+
+	<select id="selectArtPicInfos" resultType="com.armsmart.jupiter.bs.api.entity.ThingPicInfo">
+		select
+			id,thing_id,pic_url,pic_md5,create_time,update_time,is_del
+		from thing_pic_info
+		where thing_id = #{id} and is_del = 0
+	</select>
+
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,contract_addr,thing_id,check_type,file_info,user_id,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.CheckInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into check_info
+		(contract_addr,thing_id,check_type,file_info,user_id,create_time,update_time,is_del)
+		values (
+		#{contractAddr,jdbcType=VARCHAR},
+		#{thingId,jdbcType=BIGINT},
+		#{checkType,jdbcType=INTEGER},
+		#{fileInfo,jdbcType=VARCHAR},
+		#{userId,jdbcType=INTEGER},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.CheckInfo" >
+		update check_info
+		<set>
+			contract_addr = #{contractAddr,jdbcType=VARCHAR},
+			thing_id = #{thingId,jdbcType=BIGINT},
+			check_type = #{checkType,jdbcType=INTEGER},
+			file_info = #{fileInfo,jdbcType=VARCHAR},
+			user_id = #{userId,jdbcType=INTEGER},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.CheckInfo" >
+		update check_info
+		<set>
+			<if test="contractAddr != null">
+				contract_addr = #{contractAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="thingId != null">
+				thing_id = #{thingId,jdbcType=BIGINT},
+			</if>
+			<if test="checkType != null">
+				check_type = #{checkType,jdbcType=INTEGER},
+			</if>
+			<if test="fileInfo != null">
+				file_info = #{fileInfo,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from check_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from check_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from check_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="contractAddr != null and contractAddr != ''">
+				and contract_addr = #{contractAddr}
+			</if>
+			<if test="thingId != null">
+				and thing_id = #{thingId}
+			</if>
+			<if test="checkType != null">
+				and check_type = #{checkType}
+			</if>
+			<if test="fileInfo != null and fileInfo != ''">
+				and file_info = #{fileInfo}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'contractAddr'">
+				contract_addr ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingId'">
+				thing_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'checkType'">
+				check_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'fileInfo'">
+				file_info ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userId'">
+				user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.AppConfigureInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.AppConfigureInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="appVersion" jdbcType="VARCHAR" column="app_version"/>
+        <result property="telephone" jdbcType="VARCHAR" column="telephone"/>
+        <result property="offAccount" jdbcType="VARCHAR" column="off_account"/>
+        <result property="userAgreement" jdbcType="VARCHAR" column="user_agreement"/>
+        <result property="privacyPolicy" jdbcType="VARCHAR" column="privacy_policy"/>
+        <result property="cloume1" jdbcType="VARCHAR" column="cloume_1"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,app_version,telephone,off_account,user_agreement,privacy_policy,cloume_1,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.AppConfigureInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into app_configure_info
+		(app_version,telephone,off_account,user_agreement,privacy_policy,cloume_1,create_time,update_time,is_del)
+		values (
+		#{appVersion,jdbcType=VARCHAR},
+		#{telephone,jdbcType=VARCHAR},
+		#{offAccount,jdbcType=VARCHAR},
+		#{userAgreement,jdbcType=VARCHAR},
+		#{privacyPolicy,jdbcType=VARCHAR},
+		#{cloume1,jdbcType=VARCHAR},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.AppConfigureInfo" >
+		update app_configure_info
+		<set>
+			app_version = #{appVersion,jdbcType=VARCHAR},
+			telephone = #{telephone,jdbcType=VARCHAR},
+			off_account = #{offAccount,jdbcType=VARCHAR},
+			user_agreement = #{userAgreement,jdbcType=VARCHAR},
+			privacy_policy = #{privacyPolicy,jdbcType=VARCHAR},
+			cloume_1 = #{cloume1,jdbcType=VARCHAR},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.AppConfigureInfo" >
+		update app_configure_info
+		<set>
+			<if test="appVersion != null">
+				app_version = #{appVersion,jdbcType=VARCHAR},
+			</if>
+			<if test="telephone != null">
+				telephone = #{telephone,jdbcType=VARCHAR},
+			</if>
+			<if test="offAccount != null">
+				off_account = #{offAccount,jdbcType=VARCHAR},
+			</if>
+			<if test="userAgreement != null">
+				user_agreement = #{userAgreement,jdbcType=VARCHAR},
+			</if>
+			<if test="privacyPolicy != null">
+				privacy_policy = #{privacyPolicy,jdbcType=VARCHAR},
+			</if>
+			<if test="cloume1 != null">
+				cloume_1 = #{cloume1,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from app_configure_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from app_configure_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from app_configure_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="appVersion != null and appVersion != ''">
+				and app_version = #{appVersion}
+			</if>
+			<if test="telephone != null and telephone != ''">
+				and telephone = #{telephone}
+			</if>
+			<if test="offAccount != null and offAccount != ''">
+				and off_account = #{offAccount}
+			</if>
+			<if test="userAgreement != null and userAgreement != ''">
+				and user_agreement = #{userAgreement}
+			</if>
+			<if test="privacyPolicy != null and privacyPolicy != ''">
+				and privacy_policy = #{privacyPolicy}
+			</if>
+			<if test="cloume1 != null and cloume1 != ''">
+				and cloume_1 = #{cloume1}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'appVersion'">
+				app_version ${orderSort}
+				</if>
+		    	<if test="orderBy == 'telephone'">
+				telephone ${orderSort}
+				</if>
+		    	<if test="orderBy == 'offAccount'">
+				off_account ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userAgreement'">
+				user_agreement ${orderSort}
+				</if>
+		    	<if test="orderBy == 'privacyPolicy'">
+				privacy_policy ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cloume1'">
+				cloume_1 ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

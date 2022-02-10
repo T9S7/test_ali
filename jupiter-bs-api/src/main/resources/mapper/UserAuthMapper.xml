@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.UserAuthMapper">
+
+    <resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.UserAuth">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="userId" jdbcType="INTEGER" column="user_id"/>
+        <result property="identityType" jdbcType="INTEGER" column="identity_type"/>
+        <result property="identifier" jdbcType="VARCHAR" column="identifier"/>
+        <result property="credential" jdbcType="VARCHAR" column="credential"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+	    <![CDATA[
+        id
+        ,
+        user_id,
+        identity_type,
+        identifier,
+        credential,
+        is_del
+        ]]>
+	</sql>
+    <!-- 插入数据 -->
+    <insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.UserAuth" useGeneratedKeys="true" keyProperty="id">
+        insert into user_auth
+            (user_id, identity_type, identifier, credential, is_del)
+        values (#{userId,jdbcType=INTEGER},
+                #{identityType,jdbcType=INTEGER},
+                #{identifier,jdbcType=VARCHAR},
+                #{credential,jdbcType=VARCHAR},
+                #{isDel,jdbcType=BIT})
+    </insert>
+    <!-- 更新数据 包含null-->
+    <update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.UserAuth">
+        update user_auth
+        <set>
+            user_id = #{userId,jdbcType=INTEGER},
+            identity_type = #{identityType,jdbcType=INTEGER},
+            identifier = #{identifier,jdbcType=VARCHAR},
+            credential = #{credential,jdbcType=VARCHAR},
+            is_del = #{isDel,jdbcType=BIT}
+        </set>
+        WHERE id = #{id}
+    </update>
+    <!-- 更新数据，不包含null -->
+    <update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.UserAuth">
+        update user_auth
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="identityType != null">
+                identity_type = #{identityType,jdbcType=INTEGER},
+            </if>
+            <if test="identifier != null">
+                identifier = #{identifier,jdbcType=VARCHAR},
+            </if>
+            <if test="credential != null">
+                credential = #{credential,jdbcType=VARCHAR},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=BIT}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 主键条件查询 -->
+    <select id="selectById" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from user_auth
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByIdentifier" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from user_auth
+        WHERE identifier = #{identifier} and is_del = 0
+    </select>
+
+    <select id="selectByUserId" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from user_auth
+        WHERE user_id = #{userId} and is_del = 0
+    </select>
+
+
+    <!-- 列表条件查询count -->
+    <select id="selectList_COUNT" resultType="java.lang.Long">
+        select count(*)
+        from user_auth
+        <include refid="whereSql"/>
+    </select>
+
+    <!-- 列表条件查询 -->
+    <select id="selectList" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from user_auth
+        <include refid="whereSql"/>
+        <include refid="orderSql"/>
+    </select>
+
+    <sql id="whereSql">
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="identityType != null">
+                and identity_type = #{identityType}
+            </if>
+            <if test="identifier != null and identifier != ''">
+                and identifier = #{identifier}
+            </if>
+            <if test="credential != null and credential != ''">
+                and credential = #{credential}
+            </if>
+            <if test="isDel != null">
+                and is_del = #{isDel}
+            </if>
+        </where>
+    </sql>
+    <sql id="orderSql">
+        <choose>
+            <when test="orderBy != null and orderBy != ''">
+                order by
+                <if test="orderBy == 'id'">
+                    id ${orderSort}
+                </if>
+                <if test="orderBy == 'userId'">
+                    user_id ${orderSort}
+                </if>
+                <if test="orderBy == 'identityType'">
+                    identity_type ${orderSort}
+                </if>
+                <if test="orderBy == 'identifier'">
+                    identifier ${orderSort}
+                </if>
+                <if test="orderBy == 'credential'">
+                    credential ${orderSort}
+                </if>
+                <if test="orderBy == 'isDel'">
+                    is_del ${orderSort}
+                </if>
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+    </sql>
+</mapper>
+

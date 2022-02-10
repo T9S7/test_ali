@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.UserAuthenticationMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.UserAuthentication">
+        <result property="id" jdbcType="BIGINT" column="id"/>
+        <result property="name" jdbcType="VARCHAR" column="name"/>
+        <result property="userId" jdbcType="INTEGER" column="user_id"/>
+        <result property="certificateNo" jdbcType="VARCHAR" column="certificate_no"/>
+        <result property="mobile" jdbcType="VARCHAR" column="mobile"/>
+        <result property="certificateFace" jdbcType="VARCHAR" column="certificate_face"/>
+        <result property="certificateBack" jdbcType="VARCHAR" column="certificate_back"/>
+		<result property="bizId" jdbcType="VARCHAR" column="biz_id"/>
+		<result property="bizType" jdbcType="VARCHAR" column="biz_type"/>
+        <result property="isCert" jdbcType="BIT" column="is_cert"/>
+        <result property="isBind" jdbcType="BIT" column="is_bind"/>
+		<result property="privateKeyM" jdbcType="VARCHAR" column="private_keyM"/>
+		<result property="privateKeyE" jdbcType="VARCHAR" column="private_keyE"/>
+        <result property="publicKeyM" jdbcType="VARCHAR" column="public_keyM"/>
+        <result property="publicKeyE" jdbcType="VARCHAR" column="public_keyE"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,name,user_id,certificate_no,mobile,certificate_face,certificate_back,is_cert,is_bind,private_keyM,private_keyE,public_keyM,public_keyE,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.UserAuthentication" useGeneratedKeys="true" keyProperty="id">
+		insert into user_authentication
+		(name,user_id,certificate_no,mobile,certificate_face,certificate_back,is_cert,is_bind,public_keyM,public_keyE,create_time,update_time,is_del)
+		values (
+
+		#{name,jdbcType=VARCHAR},
+		#{userId,jdbcType=INTEGER},
+		#{certificateNo,jdbcType=VARCHAR},
+		#{mobile,jdbcType=VARCHAR},
+		#{certificateFace,jdbcType=VARCHAR},
+		#{certificateBack,jdbcType=VARCHAR},
+		#{isCert,jdbcType=BIT},
+		#{isBind,jdbcType=BIT},
+		#{publicKeyM,jdbcType=VARCHAR},
+		#{publicKeyE,jdbcType=VARCHAR},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.UserAuthentication" >
+		update user_authentication
+		<set>
+			name = #{name,jdbcType=VARCHAR},
+			user_id = #{userId,jdbcType=INTEGER},
+			certificate_no = #{certificateNo,jdbcType=VARCHAR},
+			mobile = #{mobile,jdbcType=VARCHAR},
+			certificate_face = #{certificateFace,jdbcType=VARCHAR},
+			certificate_back = #{certificateBack,jdbcType=VARCHAR},
+			is_cert = #{isCert,jdbcType=BIT},
+			is_bind = #{isBind,jdbcType=BIT},
+			public_keyM = #{publicKeyM,jdbcType=VARCHAR},
+			public_keyE = #{publicKeyE,jdbcType=VARCHAR},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.UserAuthentication" >
+		update user_authentication
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="certificateNo != null">
+				certificate_no = #{certificateNo,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				mobile = #{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="certificateFace != null">
+				certificate_face = #{certificateFace,jdbcType=VARCHAR},
+			</if>
+			<if test="certificateBack != null">
+				certificate_back = #{certificateBack,jdbcType=VARCHAR},
+			</if>
+			<if test="isCert != null">
+				is_cert = #{isCert,jdbcType=BIT},
+			</if>
+			<if test="isBind != null">
+				is_bind = #{isBind,jdbcType=BIT},
+			</if>
+			<if test="publicKeyM != null">
+				public_keyM = #{publicKeyM,jdbcType=VARCHAR},
+			</if>
+			<if test="publicKeyM != null">
+				public_keyE = #{publicKeyE,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_authentication
+		WHERE id = #{id}
+	</select>
+	
+		<!-- 身份证条件查询-->
+	<select id="selectByCertNo" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_authentication
+		WHERE certificate_no = #{certificateNo}
+			and is_del = 0
+	</select>
+
+	<select id="loginResult" resultType="com.armsmart.jupiter.bs.api.dto.response.UserAuthenticationResult">
+		SELECT
+			name,
+			certificate_no,
+			certificate_face,
+			certificate_back,
+			is_cert,
+			is_bind,
+			public_keyM,
+			public_keyE
+			 FROM user_authentication
+			where user_id = #{userId}
+			and is_del = 0
+	</select>
+
+	<!-- 用户id查询-->
+	<select id="selectByUserId" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_authentication
+		WHERE user_id = #{userId}
+		and is_del = 0
+	</select>
+	<!-- 身份证条件查询实人认证信息-->
+	<select id="checkByCertNo" resultMap="baseResultMap">
+		select
+		 biz_id,biz_type
+		from user_authentication
+		WHERE certificate_no = #{certificateNo}
+		and is_del = 0
+	</select>
+
+	<!-- 手机号条件查询-->
+	<select id="selectByMobile" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_authentication
+		WHERE mobile = #{mobile}
+		and is_del = 0
+	</select>
+
+	<!-- 身份证号码查询并更新认证状态-->
+	<update id="updateCert" >
+		update user_authentication
+		set is_cert = 1
+		where certificate_no = #{certificateNo}
+		and is_del = 0
+	</update>
+
+	<!-- 更新阿里实人认证信息-->
+	<update id="updateBiz" >
+		update user_authentication
+		set biz_id = #{bizId},
+		    biz_type = #{bizType},
+		    is_cert = 0
+		where id=#{id}
+		and is_del = 0
+	</update>
+
+	<!-- 公钥绑定-->
+	<update id="bind" >
+		update user_authentication
+		set is_bind = 1,
+			public_keyM = #{publicKeyM,jdbcType=VARCHAR},
+			public_keyE = #{publicKeyE,jdbcType=VARCHAR},
+			update_time = #{updateTime,jdbcType=BIGINT}
+		where certificate_no = #{certificateNo}
+		and is_del = 0
+	</update>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from user_authentication
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_authentication
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				and name = #{name}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="certificateNo != null and certificateNo != ''">
+				and certificate_no = #{certificateNo}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				and mobile = #{mobile}
+			</if>
+			<if test="certificateFace != null and certificateFace != ''">
+				and certificate_face = #{certificateFace}
+			</if>
+			<if test="certificateBack != null and certificateBack != ''">
+				and certificate_back = #{certificateBack}
+			</if>
+			<if test="isCert != null">
+				and is_cert = #{isCert}
+			</if>
+			<if test="isBind != null">
+				and is_bind = #{isBind}
+			</if>
+			<if test="publicKeyM != null and publicKeyM != ''">
+				and public_keyM = #{public_keyM}
+			</if>
+			<if test="publicKeyE != null and publicKeyE != ''">
+				and public_keyE = #{publicKeyE}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'name'">
+				name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userId'">
+				user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'certificateNo'">
+				certificate_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'mobile'">
+				mobile ${orderSort}
+				</if>
+		    	<if test="orderBy == 'certificateFace'">
+				certificate_face ${orderSort}
+				</if>
+		    	<if test="orderBy == 'certificateBack'">
+				certificate_back ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isCert'">
+				is_cert ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isBind'">
+				is_bind ${orderSort}
+				</if>
+		    	<if test="orderBy == 'publicKeyM'">
+				public_keyM ${orderSort}
+				</if>
+		    	<if test="orderBy == 'publicKeyE'">
+				public_keyE ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

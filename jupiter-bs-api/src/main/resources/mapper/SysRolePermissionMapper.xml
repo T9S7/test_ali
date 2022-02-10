@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.SysRolePermissionMapper">
+
+    <resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.SysRolePermission">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="roleId" jdbcType="INTEGER" column="role_id"/>
+        <result property="resourceId" jdbcType="INTEGER" column="resource_id"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+	    <![CDATA[
+        id
+        ,
+        role_id,
+        resource_id,
+        create_time
+        ]]>
+	</sql>
+    <!-- 插入数据 -->
+    <insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.SysRolePermission" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into sys_role_permission
+            (role_id, resource_id, create_time)
+        values (#{roleId,jdbcType=INTEGER},
+                #{resourceId,jdbcType=INTEGER},
+                #{createTime,jdbcType=BIGINT})
+    </insert>
+
+    <!-- 批量插入数据 -->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into sys_role_permission (role_id,resource_id,create_time)
+        values
+        <foreach collection="list" item="sysRolePermission" separator=",">
+            (#{sysRolePermission.roleId},#{sysRolePermission.resourceId},#{sysRolePermission.createTime})
+        </foreach>
+    </insert>
+
+    <!-- 更新数据 包含null-->
+    <update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.SysRolePermission">
+        update sys_role_permission
+        <set>
+            role_id = #{roleId,jdbcType=INTEGER},
+            resource_id = #{resourceId,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=BIGINT}
+        </set>
+        WHERE id = #{id}
+    </update>
+    <!-- 更新数据，不包含null -->
+    <update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.SysRolePermission">
+        update sys_role_permission
+        <set>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="resourceId != null">
+                resource_id = #{resourceId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据角色ID删除 -->
+    <delete id="deleteByRoleId">
+        delete
+        from sys_role_permission
+        where role_id = #{roleId}
+    </delete>
+
+    <!-- 主键条件查询 -->
+    <select id="selectById" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_role_permission
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByResourceId" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_role_permission
+        WHERE resource_id = #{resourceId}
+    </select>
+
+    <!-- 根据角色ID查询角色资源权限 -->
+    <select id="selectRolePermission" resultType="com.armsmart.jupiter.bs.api.entity.SysResource">
+        SELECT DISTINCT
+            r.resource_id   resourceId,
+            r.resource_name resourceName,
+            r.resource_type resourceType,
+            r.resource_path resourcePath,
+            r.resource_key  resourceKey,
+            r.resource_sort resourceSort,
+            r.parent_id     parentId
+        FROM
+            (
+                SELECT
+                    resource_id
+                FROM
+                    sys_role_permission
+                WHERE
+                    role_id = #{roleId}
+            ) p
+                INNER JOIN sys_resource r ON p.resource_id = r.resource_id
+        WHERE
+            r.is_del = 0
+          AND r.is_enable = 1
+        ORDER BY r.resource_sort
+    </select>
+
+    <!-- 列表条件查询count -->
+    <select id="selectList_COUNT" resultType="java.lang.Long">
+        SELECT count(*)
+        FROM sys_role_permission
+        <include refid="whereSql"/>
+    </select>
+
+    <!-- 列表条件查询 -->
+    <select id="selectList" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_role_permission
+        <include refid="whereSql"/>
+        <include refid="orderSql"/>
+    </select>
+
+    <sql id="whereSql">
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="roleId != null">
+                AND role_id = #{roleId}
+            </if>
+            <if test="resourceId != null">
+                AND resource_id = #{resourceId}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="orderSql">
+        <choose>
+            <when test="orderBy != null and orderBy != ''">
+                ORDER BY
+                <if test="orderBy == 'id'">
+                    id ${orderSort}
+                </if>
+                <if test="orderBy == 'roleId'">
+                    role_id ${orderSort}
+                </if>
+                <if test="orderBy == 'resourceId'">
+                    resource_id ${orderSort}
+                </if>
+                <if test="orderBy == 'createTime'">
+                    create_time ${orderSort}
+                </if>
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
+    </sql>
+</mapper>
+

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.OrderInfoMapper">
+
+    <resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.OrderInfo">
+        <result property="orderId" jdbcType="BIGINT" column="order_id"/>
+        <result property="orderSn" jdbcType="VARCHAR" column="order_sn"/>
+        <result property="orderCategory" jdbcType="VARCHAR" column="order_category"/>
+        <result property="thingId" jdbcType="BIGINT" column="thing_id"/>
+        <result property="thingName" jdbcType="VARCHAR" column="thing_name"/>
+        <result property="thingSellId" jdbcType="BIGINT" column="thing_sell_id"/>
+        <result property="price" jdbcType="BIGINT" column="price"/>
+        <result property="amount" jdbcType="INTEGER" column="amount"/>
+        <result property="insurance" jdbcType="BIGINT" column="insurance"/>
+        <result property="buyerAddress" jdbcType="VARCHAR" column="buyer_address"/>
+        <result property="buyerName" jdbcType="VARCHAR" column="buyer_name"/>
+        <result property="buyerMobile" jdbcType="VARCHAR" column="buyer_mobile"/>
+        <result property="orderStatus" jdbcType="INTEGER" column="order_status"/>
+        <result property="sellerId" jdbcType="INTEGER" column="seller_id"/>
+        <result property="buyerId" jdbcType="INTEGER" column="buyer_id"/>
+        <result property="expressNumber" jdbcType="VARCHAR" column="express_number"/>
+        <result property="expressCompany" jdbcType="VARCHAR" column="express_company"/>
+        <result property="payType" jdbcType="INTEGER" column="pay_type"/>
+        <result property="payStatus" jdbcType="INTEGER" column="pay_status"/>
+        <result property="payTime" jdbcType="BIGINT" column="pay_time"/>
+        <result property="payDeadline" jdbcType="BIGINT" column="pay_deadline"/>
+        <result property="sendOutDeadline" jdbcType="BIGINT" column="send_out_deadline"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+        <result property="buyerDel" jdbcType="BIT" column="buyer_del"/>
+        <result property="sellerDel" jdbcType="BIT" column="seller_del"/>
+        <result property="tlOrderRequest" jdbcType="VARCHAR" column="tl_order_request"/>
+        <result property="tlOrderSn" jdbcType="VARCHAR" column="tl_order_no"/>
+        <result property="tradeType" jdbcType="INTEGER" column="trade_type"/>
+        <result property="sonTradeType" jdbcType="INTEGER" column="son_trade_type"/>
+        <result property="buyerFailureReason" jdbcType="VARCHAR" column="buyer_failure_reason"/>
+        <result property="sellerFailureReason" jdbcType="VARCHAR" column="seller_failure_reason"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+	    <![CDATA[
+                        order_id,order_sn,order_category,thing_id,thing_name,thing_sell_id,price,amount,insurance,buyer_address,buyer_name,buyer_mobile,order_status,seller_id,buyer_id,express_number,express_company,pay_type,pay_status,pay_time,pay_deadline,send_out_deadline,create_time,update_time,is_del,buyer_del,seller_del,tl_order_request,tl_order_no,trade_type,son_trade_type,buyer_failure_reason,seller_failure_reason
+
+
+        ]]>
+	</sql>
+    <!-- 插入数据 -->
+    <insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.OrderInfo" useGeneratedKeys="true"
+            keyProperty="orderId">
+		insert into order_info
+                (order_sn,order_category,thing_id,thing_name,thing_sell_id,price,amount,insurance,buyer_address,buyer_name,buyer_mobile,order_status,seller_id,buyer_id,express_number,express_company,pay_type,pay_status,pay_time,pay_deadline,send_out_deadline,create_time,update_time,is_del,buyer_del,seller_del,tl_order_no,trade_type,son_trade_type,buyer_failure_reason,seller_failure_reason)
+		values (
+		#{orderSn,jdbcType=VARCHAR},
+		#{orderCategory,jdbcType=INTEGER},
+		#{thingId,jdbcType=BIGINT},
+		#{thingName,jdbcType=VARCHAR},
+		#{thingSellId,jdbcType=BIGINT},
+		#{price,jdbcType=BIGINT},
+		#{amount,jdbcType=INTEGER},
+		#{insurance,jdbcType=BIGINT},
+		#{buyerAddress,jdbcType=VARCHAR},
+		#{buyerName,jdbcType=VARCHAR},
+		#{buyerMobile,jdbcType=VARCHAR},
+		#{orderStatus,jdbcType=INTEGER},
+		#{sellerId,jdbcType=INTEGER},
+		#{buyerId,jdbcType=INTEGER},
+		#{expressNumber,jdbcType=VARCHAR},
+		#{expressCompany,jdbcType=VARCHAR},
+		#{payType,jdbcType=INTEGER},
+		#{payStatus,jdbcType=INTEGER},
+		#{payTime,jdbcType=BIGINT},
+		#{payDeadline,jdbcType=BIGINT},
+		#{sendOutDeadline,jdbcType=BIGINT},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT},
+		#{buyerDel,jdbcType=BIT},
+		#{sellerDel,jdbcType=BIT},
+		#{tlOrderSn,jdbcType=VARCHAR},
+		#{tradeType,jdbcType=INTEGER},
+		#{sonTradeType,jdbcType=INTEGER},
+		#{buyerFailureReason,jdbcType=VARCHAR},
+		#{sellerFailureReason,jdbcType=VARCHAR}
+		)
+	</insert>
+    <!-- 更新数据 包含null-->
+    <update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.OrderInfo">
+        update order_info
+        <set>
+            order_sn = #{orderSn,jdbcType=VARCHAR},
+            order_category = #{orderCategory,jdbcType=INTEGER},
+            thing_id = #{thingId,jdbcType=BIGINT},
+            thing_name = #{thingName,jdbcType=VARCHAR},
+            thing_sell_id = #{thingSellId,jdbcType=BIGINT},
+            price = #{price,jdbcType=BIGINT},
+            insurance = #{insurance,jdbcType=BIGINT},
+            buyer_address = #{buyerAddress,jdbcType=VARCHAR},
+            buyer_name = #{buyerName,jdbcType=VARCHAR},
+            buyer_mobile = #{buyerMobile,jdbcType=VARCHAR},
+            order_status = #{orderStatus,jdbcType=INTEGER},
+            seller_id = #{sellerId,jdbcType=INTEGER},
+            buyer_id = #{buyerId,jdbcType=INTEGER},
+            express_number = #{expressNumber,jdbcType=VARCHAR},
+            express_company = #{expressCompany,jdbcType=VARCHAR},
+            pay_type = #{payType,jdbcType=INTEGER},
+            pay_status = #{payStatus,jdbcType=INTEGER},
+            pay_time = #{payTime,jdbcType=BIGINT},
+            pay_deadline = #{payDeadline,jdbcType=BIGINT},
+            send_out_deadline = #{sendOutDeadline,jdbcType=BIGINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            is_del = #{isDel,jdbcType=BIT},
+            buyer_del = #{buyerDel,jdbcType=BIT},
+            seller_del = #{sellerDel,jdbcType=BIT},
+            buyer_failure_reason = #{buyerFailureReason,jdbcType=VARCHAR},
+            seller_failure_reason =#{sellerFailureReason,jdbcType=VARCHAR}
+        </set>
+        WHERE order_id = #{orderId}
+    </update>
+    <!-- 更新数据，不包含null -->
+    <update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.OrderInfo">
+        update order_info
+        <set>
+            <if test="orderSn != null">
+                order_sn = #{orderSn,jdbcType=VARCHAR},
+            </if>
+            <if test="orderCategory != null">
+                order_category = #{orderCategory,jdbcType=INTEGER},
+            </if>
+            <if test="thingId != null">
+                thing_id = #{thingId,jdbcType=BIGINT},
+            </if>
+            <if test="thingName != null">
+                thing_name = #{thingName,jdbcType=VARCHAR},
+            </if>
+            <if test="thingSellId != null">
+                thing_sell_id = #{thingSellId,jdbcType=BIGINT},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=BIGINT},
+            </if>
+            <if test="insurance != null">
+                insurance = #{insurance,jdbcType=BIGINT},
+            </if>
+            <if test="buyerAddress != null">
+                buyer_address = #{buyerAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="buyerName != null">
+                buyer_name = #{buyerName,jdbcType=VARCHAR},
+            </if>
+            <if test="buyerMobile != null">
+                buyer_mobile = #{buyerMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=INTEGER},
+            </if>
+            <if test="sellerId != null">
+                seller_id = #{sellerId,jdbcType=INTEGER},
+            </if>
+            <if test="buyerId != null">
+                buyer_id = #{buyerId,jdbcType=INTEGER},
+            </if>
+            <if test="expressNumber != null">
+                express_number = #{expressNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="expressCompany != null">
+                express_company = #{expressCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null">
+                pay_type = #{payType,jdbcType=INTEGER},
+            </if>
+            <if test="payStatus != null">
+                pay_status = #{payStatus,jdbcType=INTEGER},
+            </if>
+            <if test="payTime != null">
+                pay_time = #{payTime,jdbcType=BIGINT},
+            </if>
+            <if test="payDeadline != null">
+                pay_deadline = #{payDeadline,jdbcType=BIGINT},
+            </if>
+            <if test="sendOutDeadline != null">
+                send_out_deadline = #{sendOutDeadline,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=BIT},
+            </if>
+            <if test="buyerDel != null">
+                buyer_del = #{buyerDel,jdbcType=BIT},
+            </if>
+            <if test="sellerDel != null">
+                seller_del = #{sellerDel,jdbcType=BIT},
+            </if>
+            <if test="tlOrderSn != null">
+                tl_order_no = #{tlOrderSn,jdbcType=VARCHAR},
+            </if>
+            <if test="tlOrderRequest != null">
+                tl_order_request = #{tlOrderRequest,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeType != null">
+                trade_type = #{tradeType,jdbcType=INTEGER},
+            </if>
+            <if test="sonTradeType != null">
+                son_trade_type = #{sonTradeType,jdbcType=INTEGER},
+            </if>
+            <if test="buyerFailureReason != null">
+                buyer_failure_reason = #{buyerFailureReason,jdbcType=VARCHAR},
+            </if>
+            <if test="sellerFailureReason != null">
+                seller_failure_reason =#{sellerFailureReason,jdbcType=VARCHAR}
+            </if>
+        </set>
+        WHERE order_id = #{orderId}
+    </update>
+
+    <!-- 主键条件查询 -->
+    <select id="selectById" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="selectByPayOrderId" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE tl_order_request = #{tlOrderRequest}
+    </select>
+    <!-- 主键条件查询 -->
+    <select id="selectByThingId" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE thing_id = #{thingId}
+        and order_status = 3
+    </select>
+
+    <select id="orderInfoByThingId" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE thing_id = #{thingId}
+        and order_status = 1
+    </select>
+
+    <select id="selectByBuyer" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE thing_sell_id = #{thingSellId}
+        and buyer_id = #{buyerId}
+        and order_status = 8
+        and thing_name = "买家支付保证金"
+    </select>
+
+    <select id="selectBySeller" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE thing_id = #{thingId}
+        and seller_id = #{sellerId}
+        and order_status = 8
+        and thing_name = "卖家支付保证金"
+    </select>
+
+    <select id="selectOrderByBuyer" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE thing_sell_id = #{thingSellId}
+        and buyer_id = #{buyerId}
+        and order_category = 1
+    </select>
+
+    <select id="selectOrderBySeller" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE thing_id = #{thingId}
+        and seller_id = #{sellerId}
+        and order_category = 1
+        and order_status = 2
+    </select>
+    <!-- 列表条件查询count -->
+    <select id="selectList_COUNT" resultType="java.lang.Long">
+        select count(*)
+        from order_info
+        <include refid="whereSql"/>
+    </select>
+
+    <!-- 列表条件查询 -->
+    <select id="selectList" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        <include refid="whereSql"/>
+        <include refid="orderSql"/>
+    </select>
+
+    <select id="selectByOrderSn" resultMap="baseResultMap">
+        select
+        <include refid="columns"/>
+        from order_info
+        WHERE order_sn = #{orderSn}
+    </select>
+
+    <sql id="whereSql">
+        <where>
+            <if test="orderSn != null">
+                and order_sn = #{orderSn}
+            </if>
+            <if test="orderCategory != null">
+                and order_category in
+                <foreach collection="orderCategory" index="index" item="item" open="(" separator="," close=")"> #{item}
+                </foreach>
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId}
+            </if>
+            <if test="thingId != null">
+                and thing_id = #{thingId}
+            </if>
+            <if test="thingName != null">
+                and thing_name = #{thingName}
+            </if>
+            <if test="thingSellId != null">
+                and thing_sell_id = #{thingSellId}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="insurance != null">
+                and insurance = #{insurance}
+            </if>
+            <if test="buyerAddress != null and buyerAddress != ''">
+                and buyer_address = #{buyerAddress}
+            </if>
+            <if test="buyerName != null and buyerName != ''">
+                and buyer_name = #{buyerName}
+            </if>
+            <if test="buyerMobile != null and buyerMobile != ''">
+                and buyer_mobile = #{buyerMobile}
+            </if>
+            <if test="orderStatus != null">
+                and order_status in
+                <foreach collection="orderStatus" index="index" item="item" open="(" separator="," close=")">#{item}
+                </foreach>
+            </if>
+            <if test="sellerId != null">
+                and seller_id = #{sellerId}
+            </if>
+            <if test="buyerId != null">
+                and buyer_id = #{buyerId}
+            </if>
+            <if test="expressNumber != null and expressNumber != ''">
+                and express_number = #{expressNumber}
+            </if>
+            <if test="expressCompany != null and expressCompany != ''">
+                and express_company = #{expressCompany}
+            </if>
+            <if test="payType != null">
+                and pay_type = #{payType}
+            </if>
+            <if test="payStatus != null">
+                and pay_status = #{payStatus}
+            </if>
+            <if test="payTime != null">
+                and pay_time = #{payTime}
+            </if>
+            <if test="payDeadline != null">
+                and pay_deadline = #{payDeadline}
+            </if>
+            <if test="sendOutDeadline != null">
+                and send_out_deadline = #{sendOutDeadline}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="isDel != null">
+                and is_del = #{isDel}
+            </if>
+            <if test="buyerDel != null">
+                and buyer_del = #{buyerDel}
+            </if>
+            <if test="sellerDel != null">
+                and seller_del = #{sellerDel}
+            </if>
+        </where>
+    </sql>
+    <sql id="orderSql">
+        <choose>
+            <when test="orderBy != null and orderBy != ''">
+                order by
+                <if test="orderBy == 'orderId'">
+                    order_id ${orderSort}
+                </if>
+                <if test="orderBy == 'orderSn'">
+                    order_sn ${orderSort}
+                </if>
+                <if test="orderBy == 'thingId'">
+                    thing_id ${orderSort}
+                </if>
+                <if test="orderBy == 'thingName'">
+                    thing_name ${orderSort}
+                </if>
+                <if test="orderBy == 'thingSellId'">
+                    thing_sell_id ${orderSort}
+                </if>
+                <if test="orderBy == 'price'">
+                    price ${orderSort}
+                </if>
+                <if test="orderBy == 'insurance'">
+                    insurance ${orderSort}
+                </if>
+                <if test="orderBy == 'buyerAddress'">
+                    buyer_address ${orderSort}
+                </if>
+                <if test="orderBy == 'buyerName'">
+                    buyer_name ${orderSort}
+                </if>
+                <if test="orderBy == 'buyerMobile'">
+                    buyer_mobile ${orderSort}
+                </if>
+                <if test="orderBy == 'orderStatus'">
+                    order_status ${orderSort}
+                </if>
+                <if test="orderBy == 'sellerId'">
+                    seller_id ${orderSort}
+                </if>
+                <if test="orderBy == 'buyerId'">
+                    buyer_id ${orderSort}
+                </if>
+                <if test="orderBy == 'expressNumber'">
+                    express_number ${orderSort}
+                </if>
+                <if test="orderBy == 'expressCompany'">
+                    express_company ${orderSort}
+                </if>
+                <if test="orderBy == 'payType'">
+                    pay_type ${orderSort}
+                </if>
+                <if test="orderBy == 'payStatus'">
+                    pay_status ${orderSort}
+                </if>
+                <if test="orderBy == 'payTime'">
+                    pay_time ${orderSort}
+                </if>
+                <if test="orderBy == 'payDeadline'">
+                    pay_deadline ${orderSort}
+                </if>
+                <if test="orderBy == 'sendOutDeadline'">
+                    send_out_deadline ${orderSort}
+                </if>
+                <if test="orderBy == 'createTime'">
+                    create_time ${orderSort}
+                </if>
+                <if test="orderBy == 'updateTime'">
+                    update_time ${orderSort}
+                </if>
+                <if test="orderBy == 'isDel'">
+                    is_del ${orderSort}
+                </if>
+            </when>
+            <otherwise>
+                order by create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+</mapper>
+

@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.ThingInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.ThingInfo">
+        <result property="id" jdbcType="BIGINT" column="id"/>
+        <result property="contractAddr" jdbcType="VARCHAR" column="contract_addr"/>
+        <result property="artName" jdbcType="VARCHAR" column="art_name"/>
+        <result property="artYear" jdbcType="VARCHAR" column="art_year"/>
+        <result property="author" jdbcType="VARCHAR" column="author"/>
+        <result property="thingDesc" jdbcType="VARCHAR" column="thing_desc"/>
+        <result property="thingSize" jdbcType="VARCHAR" column="thing_size"/>
+        <result property="thingWeight" jdbcType="INTEGER" column="thing_weight"/>
+        <result property="thingCondition" jdbcType="VARCHAR" column="thing_condition"/>
+        <result property="thingElement" jdbcType="VARCHAR" column="thing_element"/>
+        <result property="thingType" jdbcType="INTEGER" column="thing_type"/>
+        <result property="userId" jdbcType="INTEGER" column="user_id"/>
+        <result property="uploaderId" jdbcType="INTEGER" column="uploader_id"/>
+		<result property="uploadStatus" jdbcType="BIT" column="upload_status"/>
+		<result property="currentPrice" jdbcType="BIGINT" column="current_price"/>
+		<result property="currentState" jdbcType="INTEGER" column="current_state"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+        <result property="isOfficial" jdbcType="BIT" column="is_official"/>
+		<collection property="pics" column="id" ofType="com.armsmart.jupiter.bs.api.entity.ThingPicInfo"
+					select="selectArtPicInfos"/>
+	</resultMap>
+
+	<!--<resultMap id="bidThingResultMap" type="com.armsmart.jupiter.bs.api.dto.response.ThingInfoBidDetail">-->
+		<!--<collection property="thingInfo" ofType="com.armsmart.jupiter.bs.api.entity.ThingInfo"/>-->
+		<!--<collection property="thingSellInfo" ofType="com.armsmart.jupiter.bs.api.entity.ThingSellInfo"/>-->
+		<!--<collection property="pics" column="thingId" ofType="com.armsmart.jupiter.bs.api.entity.ThingPicInfo"-->
+							   <!--select="selectArtPicInfos"/>-->
+
+	<!--</resultMap>-->
+	<select id="selectArtPicInfos" resultType="com.armsmart.jupiter.bs.api.entity.ThingPicInfo">
+		select
+			id,thing_id,pic_url,pic_md5,create_time,update_time,is_del,`type`
+		from thing_pic_info
+		where thing_id = #{id} and is_del = 0
+		order by `type` desc,create_time asc
+	</select>
+
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,contract_addr,art_name,art_year,author,thing_desc,thing_size,thing_weight,thing_condition,thing_element,thing_type,user_id,uploader_id,upload_status,current_price,current_state,create_time,update_time,is_del,is_official,cover_pic,long_pic
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.ThingInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into thing_info
+		(contract_addr,art_name,art_year,author,thing_desc,thing_size,thing_weight,thing_condition,thing_element,thing_type,user_id,uploader_id,upload_status,current_price,current_state,create_time,update_time,is_del,is_official,cover_pic,long_pic)
+		values (
+		#{contractAddr,jdbcType=VARCHAR},
+		#{artName,jdbcType=VARCHAR},
+		#{artYear,jdbcType=VARCHAR},
+		#{author,jdbcType=VARCHAR},
+		#{thingDesc,jdbcType=VARCHAR},
+		#{thingSize,jdbcType=VARCHAR},
+		#{thingWeight,jdbcType=INTEGER},
+		#{thingCondition,jdbcType=VARCHAR},
+		#{thingElement,jdbcType=VARCHAR},
+		#{thingType,jdbcType=INTEGER},
+		#{userId,jdbcType=INTEGER},
+		#{uploaderId,jdbcType=INTEGER},
+		#{uploadStatus,jdbcType=BIT},
+		#{currentPrice,jdbcType=INTEGER},
+		#{currentState,jdbcType=INTEGER},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT},
+		#{isOfficial,jdbcType=BIT},
+		#{coverPic,jdbcType=VARCHAR},
+		#{longPic,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.ThingInfo" >
+		update thing_info
+		<set>
+			contract_addr = #{contractAddr,jdbcType=VARCHAR},
+			art_name = #{artName,jdbcType=VARCHAR},
+			art_year = #{artYear,jdbcType=VARCHAR},
+			author = #{author,jdbcType=VARCHAR},
+			thing_desc = #{thingDesc,jdbcType=VARCHAR},
+			thing_size = #{thingSize,jdbcType=VARCHAR},
+			thing_weight = #{thingWeight,jdbcType=INTEGER},
+			thing_condition = #{thingCondition,jdbcType=VARCHAR},
+			thing_element = #{thingElement,jdbcType=VARCHAR},
+			thing_type = #{thingType,jdbcType=INTEGER},
+			user_id = #{userId,jdbcType=INTEGER},
+			uploader_id = #{uploaderId,jdbcType=INTEGER},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT},
+			is_official = #{isOfficial,jdbcType=BIT},
+			cover_pic =#{coverPic,jdbcType=VARCHAR},
+			long_pic = #{longPic,jdbcType=VARCHAR}
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.ThingInfo" >
+		update thing_info
+		<set>
+			<if test="contractAddr != null">
+				contract_addr = #{contractAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="artName != null">
+				art_name = #{artName,jdbcType=VARCHAR},
+			</if>
+			<if test="artYear != null">
+				art_year = #{artYear,jdbcType=VARCHAR},
+			</if>
+			<if test="author != null">
+				author = #{author,jdbcType=VARCHAR},
+			</if>
+			<if test="thingDesc != null">
+				thing_desc = #{thingDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="thingSize != null">
+				thing_size = #{thingSize,jdbcType=VARCHAR},
+			</if>
+			<if test="thingWeight != null">
+				thing_weight = #{thingWeight,jdbcType=INTEGER},
+			</if>
+			<if test="thingCondition != null">
+				thing_condition = #{thingCondition,jdbcType=VARCHAR},
+			</if>
+			<if test="thingElement != null">
+				thing_element = #{thingElement,jdbcType=VARCHAR},
+			</if>
+			<if test="thingType != null">
+				thing_type = #{thingType,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="uploaderId != null">
+				uploader_id = #{uploaderId,jdbcType=INTEGER},
+			</if>
+            <if test="currentPrice != null">
+                current_price = #{currentPrice,jdbcType=BIGINT},
+            </if>
+            <if test="currentState != null">
+                current_state = #{currentState,jdbcType=INTEGER},
+            </if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT},
+			</if>
+			<if test="isOfficial != null">
+				is_official = #{isOfficial,jdbcType=BIT},
+			</if>
+			<if test="coverPic != null">
+				cover_pic =#{coverPic,jdbcType=VARCHAR},
+			</if>
+			<if test="longPic != null">
+				long_pic = #{longPic,jdbcType=VARCHAR}
+			</if>
+
+
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 合约条件查询 -->
+	<select id="selectByContractAddr" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_info
+		WHERE contract_addr = #{contractAddr}
+		and is_del = 0
+		and upload_status = 1
+	</select>
+
+	<!-- 合约条件查询 -->
+	<select id="selectByContract" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_info
+		WHERE contract_addr = #{contractAddr}
+		and upload_status = 1
+	</select>
+
+
+	<select id="selectUploadList" resultMap="baseResultMap">
+		select * from thing_info where uploader_id = #{userId} and is_del = 0
+		order by create_time desc
+	</select>
+
+	<select id="selectBidList" parameterType="com.armsmart.jupiter.bs.api.dto.response.ThingInfoBidDetail">
+		select t2.*,
+			   t1.*,
+			   t3.bid_price,
+			   t3.user_id
+		  from(
+		  select DISTINCT(sell_id)  as sell_id
+		  FROM bid_info
+		  where user_id =#{userId} ) t
+			  INNER JOIN thing_sell_info t1 on t.sell_id= t1.id
+			  INNER JOIN thing_info t2 on t1.thing_id= t2.id
+			  INNER JOIN(
+				select distinct sell_id as sell_id,bid_price,user_id
+		  		from bid_info) t3 on t.sell_id= t3.sell_id
+	</select>
+
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_info
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectListPage" resultMap="baseResultMap">
+		SELECT
+			t1.*
+		FROM
+			thing_sell_info t
+		INNER JOIN thing_info t1 ON (
+			t.thing_id = t1.id
+			AND t.is_del = 0
+			AND t.is_del = 0
+			)
+			where t1.user_id = #{userId}
+			and t.sell_type = #{sellType}
+	</select>
+
+	<select id="selectSellList" resultType="com.armsmart.jupiter.bs.api.dto.response.ThingSellReturnDetail">
+		SELECT
+			t1.*,
+			t.*
+		FROM
+			thing_sell_info t
+		INNER JOIN thing_info t1 ON (
+			t.thing_id = t1.id
+			AND t.is_del = 0
+			AND t1.is_del = 0
+			)
+			where t1.user_id = #{userId}
+			and t.sell_type in ('1','2')
+	</select>
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from thing_info
+		<include refid="whereSql"/>
+	</select>
+
+	<select id="selectListByUserId" resultType="com.armsmart.jupiter.bs.api.entity.ThingInfo">
+		SELECT * FROM thing_info where is_del = 0 and user_id = #{userId} and upload_status = 1
+	</select>
+
+	<select id="selectListByOther" resultType="com.armsmart.jupiter.bs.api.dto.response.ThingInfoDetail">
+					SELECT
+			t.*,t1.*
+				FROM
+				thing_info t
+				INNER JOIN thing_sell_info t1 ON (
+				t.id = t1.thing_id
+				AND t1.is_del = 0
+				)
+				WHERE
+				t.is_del = 0
+				AND t.user_id = #{userId}
+				and t.upload_status = 1
+	</select>
+
+	<select id="selectListByStates" resultMap="baseResultMap">
+		SELECT <include refid="columns"/>
+		from thing_info
+		where is_del=0 AND user_id = #{userId} and current_state in
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">#{item}
+		</foreach>
+		order by update_time desc
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="contractAddr != null and contractAddr != ''">
+				and contract_addr = #{contractAddr}
+			</if>
+			<if test="artName != null and artName != ''">
+				and art_name like concat('%',#{artName},'%')
+			</if>
+			<if test="artYear != null and artYear != ''">
+				and art_year = #{artYear}
+			</if>
+			<if test="author != null and author != ''">
+				and author = #{author}
+			</if>
+			<if test="thingDesc != null and thingDesc != ''">
+				and thing_desc = #{thingDesc}
+			</if>
+			<if test="thingSize != null and thingSize != ''">
+				and thing_size = #{thingSize}
+			</if>
+			<if test="thingWeight != null">
+				and thing_weight = #{thingWeight}
+			</if>
+			<if test="thingCondition != null and thingCondition != ''">
+				and thing_condition = #{thingCondition}
+			</if>
+			<if test="thingElement != null and thingElement != ''">
+				and thing_element = #{thingElement}
+			</if>
+			<if test="thingType != null">
+				and thing_type = #{thingType}
+			</if>
+			<if test="uploaderId != null">
+				and uploader_id = #{uploaderId}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="uploadStatus != null">
+				and upload_status = #{uploadStatus}
+			</if>
+			<if test="currentPrice != null">
+				and current_price = #{currentPrice}
+			</if>
+			<if test="currentState != null">
+				and current_state = #{currentState}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+			<if test="isOfficial != null">
+				and is_official = #{isOfficial}
+			</if>
+
+            <if test="currentStates != null">
+                and current_state in
+                <foreach collection="currentStates" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'contractAddr'">
+				contract_addr ${orderSort}
+				</if>
+		    	<if test="orderBy == 'artName'">
+				art_name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'artYear'">
+				art_year ${orderSort}
+				</if>
+		    	<if test="orderBy == 'author'">
+				author ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingDesc'">
+				thing_desc ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingSize'">
+				thing_size ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingWeight'">
+				thing_weight ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingCondition'">
+				thing_condition ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingElement'">
+				thing_element ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingType'">
+				thing_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userId'">
+				user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by update_time desc
+			</otherwise>
+		</choose>
+    </sql>
+
+	<resultMap id="shortResultMap" type="com.armsmart.jupiter.bs.api.dto.response.ThingShortInfo">
+		<result property="thingId" jdbcType="BIGINT" column="thing_id"/>
+		<result property="artName" jdbcType="VARCHAR" column="art_name"/>
+		<result property="currentPrice" jdbcType="BIGINT" column="current_price"/>
+		<result property="currentState" jdbcType="INTEGER" column="current_state"/>
+		<result property="createTime" jdbcType="BIGINT" column="create_time"/>
+		<result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+		<collection property="pics" column="thing_id" ofType="com.armsmart.jupiter.bs.api.entity.ThingPicInfo" select="selectArtPicInfos"/>
+	</resultMap>
+	<!-- 已售物品列表 -->
+	<select id="selectSoldList" resultMap="shortResultMap">
+		SELECT
+			t.id thing_id,
+			t.art_name art_name,
+			t.current_state current_state,
+			t.create_time create_time,
+			t.update_time update_time,
+			o.price current_price
+		FROM
+			( SELECT * FROM order_info WHERE seller_id = #{userId} AND order_status = 8 AND seller_del = 0 and `son_trade_type` IS NULL) o
+			INNER JOIN thing_info t ON o.thing_id = t.id
+			ORDER BY o.create_time DESC
+	</select>
+</mapper>
+

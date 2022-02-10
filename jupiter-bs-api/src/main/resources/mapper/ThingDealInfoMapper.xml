@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.ThingDealInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.ThingDealInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="thingId" jdbcType="BIGINT" column="thing_id"/>
+        <result property="giveUserId" jdbcType="BIGINT" column="give_user_id"/>
+        <result property="buyUserId" jdbcType="BIGINT" column="buy_user_id"/>
+        <result property="type" jdbcType="INTEGER" column="type"/>
+        <result property="contractAddr" jdbcType="VARCHAR" column="contract_addr"/>
+        <result property="dealContractAddr" jdbcType="VARCHAR" column="deal_contract_addr"/>
+        <result property="isDone" jdbcType="BIT" column="is_done"/>
+        <result property="doneTime" jdbcType="BIGINT" column="done_time"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,thing_id,give_user_id,buy_user_id,type,contract_addr,deal_contract_addr,is_done,done_time,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.ThingDealInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into thing_deal_info
+		(thing_id,give_user_id,buy_user_id,type,contract_addr,deal_contract_addr,is_done,done_time,create_time,update_time,is_del)
+		values (
+		#{thingId,jdbcType=BIGINT},
+		#{giveUserId,jdbcType=BIGINT},
+		#{buyUserId,jdbcType=BIGINT},
+		#{type,jdbcType=INTEGER},
+		#{contractAddr,jdbcType=VARCHAR},
+		#{dealContractAddr,jdbcType=VARCHAR},
+		#{isDone,jdbcType=BIT},
+		#{doneTime,jdbcType=BIGINT},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.ThingDealInfo" >
+		update thing_deal_info
+		<set>
+			thing_id = #{thingId,jdbcType=BIGINT},
+			give_user_id = #{giveUserId,jdbcType=BIGINT},
+			buy_user_id = #{buyUserId,jdbcType=BIGINT},
+			type = #{type,jdbcType=INTEGER},
+			contract_addr = #{contractAddr,jdbcType=VARCHAR},
+			deal_contract_addr = #{dealContractAddr,jdbcType=VARCHAR},
+			is_done = #{isDone,jdbcType=BIT},
+			done_time = #{doneTime,jdbcType=BIGINT},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.ThingDealInfo" >
+		update thing_deal_info
+		<set>
+			<if test="thingId != null">
+				thing_id = #{thingId,jdbcType=BIGINT},
+			</if>
+			<if test="giveUserId != null">
+				give_user_id = #{giveUserId,jdbcType=BIGINT},
+			</if>
+			<if test="buyUserId != null">
+				buy_user_id = #{buyUserId,jdbcType=BIGINT},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="contractAddr != null">
+				contract_addr = #{contractAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="dealContractAddr != null">
+				deal_contract_addr = #{dealContractAddr,jdbcType=VARCHAR},
+			</if>
+			<if test="isDone != null">
+				is_done = #{isDone,jdbcType=BIT},
+			</if>
+			<if test="doneTime != null">
+				done_time = #{doneTime,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_deal_info
+		WHERE id = #{id}
+	</select>
+
+	<select id="getDealInfo" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_deal_info
+		where buy_user_id = #{userId}
+		and is_del = 0
+		and is_done = 0
+		and type  = 1
+		order by create_time desc
+		limit 1
+	</select>
+
+	<select id="getInfoByThingId" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_deal_info
+		where thing_id = #{thingId}
+		and is_del = 0
+		and is_done = 0
+		and type = 1
+		order by create_time desc
+		limit 1
+	</select>
+
+	<select id="selectDealInfo" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_deal_info
+		where contract_addr = #{contractAddr}
+		and is_del = 0
+		and is_done = 0
+		and type  = 2
+		order by create_time desc
+		limit 1
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from thing_deal_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from thing_deal_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="thingId != null">
+				and thing_id = #{thingId}
+			</if>
+			<if test="giveUserId != null">
+				and give_user_id = #{giveUserId}
+			</if>
+			<if test="buyUserId != null">
+				and buy_user_id = #{buyUserId}
+			</if>
+			<if test="type != null">
+				and type = #{type}
+			</if>
+			<if test="contractAddr != null and contractAddr != ''">
+				and contract_addr = #{contractAddr}
+			</if>
+			<if test="dealContractAddr != null and dealContractAddr != ''">
+				and deal_contract_addr = #{dealContractAddr}
+			</if>
+			<if test="isDone != null">
+				and is_done = #{isDone}
+			</if>
+			<if test="doneTime != null">
+				and done_time = #{doneTime}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'thingId'">
+				thing_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'giveUserId'">
+				give_user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'buyUserId'">
+				buy_user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'type'">
+				type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'contractAddr'">
+				contract_addr ${orderSort}
+				</if>
+		    	<if test="orderBy == 'dealContractAddr'">
+				deal_contract_addr ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDone'">
+				is_done ${orderSort}
+				</if>
+		    	<if test="orderBy == 'doneTime'">
+				done_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

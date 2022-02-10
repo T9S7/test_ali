@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.BidInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.BidInfo">
+        <result property="bidId" jdbcType="BIGINT" column="bid_id"/>
+        <result property="bidPrice" jdbcType="BIGINT" column="bid_price"/>
+        <result property="sellId" jdbcType="BIGINT" column="sell_id"/>
+        <result property="userId" jdbcType="INTEGER" column="user_id"/>
+        <result property="nickname" jdbcType="VARCHAR" column="nickname"/>
+        <result property="bidTime" jdbcType="BIGINT" column="bid_time"/>
+        <result property="isAuto" jdbcType="BIT" column="is_auto"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+        <result property="bidStates" jdbcType="INTEGER" column="bid_states"/>
+        <result property="orderDeadline" jdbcType="BIGINT" column="order_deadline"/>
+
+	</resultMap>
+
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		bid_id,bid_price,sell_id,user_id,nickname,bid_time,is_auto,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.BidInfo" useGeneratedKeys="true" keyProperty="bidId">
+		insert into bid_info
+		(bid_price,sell_id,user_id,nickname,bid_time,is_auto,is_del,bid_states,order_deadline)
+		values (
+		#{bidPrice,jdbcType=BIGINT},
+		#{sellId,jdbcType=BIGINT},
+		#{userId,jdbcType=INTEGER},
+		#{nickname,jdbcType=VARCHAR},
+		#{bidTime,jdbcType=BIGINT},
+		#{isAuto,jdbcType=BIT},
+		#{isDel,jdbcType=BIT},
+		#{bidStates,jdbcType=INTEGER},
+		#{orderDeadline,jdbcType=BIGINT}
+		)
+	</insert>
+
+	<select id="selectSellList" parameterType="java.lang.Long" resultType="java.lang.Long">
+		select
+		sell_id
+		from bid_info where is_del = 0 and user_id = #{userId} group by sell_id
+	</select>
+
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.BidInfo" >
+		update bid_info
+		<set>
+			bid_price = #{bidPrice,jdbcType=BIGINT},
+			sell_id = #{sellId,jdbcType=BIGINT},
+			user_id = #{userId,jdbcType=INTEGER},
+			nickname = #{nickname,jdbcType=VARCHAR},
+			bid_time = #{bidTime,jdbcType=BIGINT},
+			is_auto = #{isAuto,jdbcType=BIT},
+			is_del = #{isDel,jdbcType=BIT},
+			bid_states = #{bidStates,jdbcType=INTEGER},
+			order_deadline =#{orderDeadline,jdbcType=BIGINT}
+		</set>
+		WHERE bid_id = #{bidId}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.BidInfo" >
+		update bid_info
+		<set>
+			<if test="bidPrice != null">
+				bid_price = #{bidPrice,jdbcType=BIGINT},
+			</if>
+			<if test="sellId != null">
+				sell_id = #{sellId,jdbcType=BIGINT},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="nickname != null">
+				nickname = #{nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="bidTime != null">
+				bid_time = #{bidTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT},
+			</if>
+			<if test="isAuto != null">
+				is_auto = #{isAuto,jdbcType=BIT},
+			</if>
+			<if test="bidStates != null">
+				bid_states = #{bidStates,jdbcType=INTEGER},
+			</if>
+			<if test="orderDeadline != null">
+				order_deadline =#{orderDeadline,jdbcType=BIGINT}
+			</if>
+
+		</set>
+		WHERE bid_id = #{bidId}
+	</update>
+
+	<update id="deleteBySellIdAndUserId">
+		update bid_info set is_del = 1 where sell_id = #{sellId} and user_id = #{userId}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from bid_info
+		WHERE bid_id = #{bidId}
+	</select>
+
+	<!-- 更新竞拍状态 -->
+	<update id="updateBidStateBySellId">
+		update bid_info set bid_states = #{bidStates} where sell_id = #{sellId} and user_id != #{userId}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectMaxBid" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from bid_info
+		WHERE bid_price = (select max(bid_price) from bid_info WHERE sell_id = #{sellId})
+		and sell_id = #{sellId}
+	</select>
+
+
+	<select id="selectTopBid" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from bid_info
+		WHERE  sell_id = #{sellId}
+		order by bid_time desc limit 2
+	</select>
+
+	<select id="selectOne" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from bid_info
+		WHERE user_id=#{userId} and sell_id = #{sellId}
+		limit 1
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from bid_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from bid_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+
+
+    <sql id="whereSql">
+		<where>
+			<if test="bidId != null">
+				and bid_id = #{bidId}
+			</if>
+			<if test="bidPrice != null">
+				and bid_price = #{bidPrice}
+			</if>
+			<if test="sellId != null">
+				and sell_id = #{sellId}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="nickname != null and nickname != ''">
+				and nickname = #{nickname}
+			</if>
+			<if test="bidTime != null">
+				and bid_time = #{bidTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+			<if test="bidStates != null">
+				and bid_states = #{bidStates}
+			</if>
+			<if test="orderDeadline != null">
+				and order_deadline = #{orderDeadline}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'bidId'">
+				bid_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'bidPrice'">
+				bid_price ${orderSort}
+				</if>
+		    	<if test="orderBy == 'sellId'">
+				sell_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userId'">
+				user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'nickname'">
+				nickname ${orderSort}
+				</if>
+		    	<if test="orderBy == 'bidTime'">
+				bid_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+				<if test="orderBy == 'bidStates'">
+					bid_states ${orderSort}
+				</if>
+				<if test="orderBy == 'orderDeadline'">
+					order_deadline ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by bid_price desc
+			</otherwise>
+		</choose>
+    </sql>
+
+</mapper>
+

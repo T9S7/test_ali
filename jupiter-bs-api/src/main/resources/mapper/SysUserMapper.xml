@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.SysUserMapper">
+
+    <resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.SysUser">
+        <result property="userId" jdbcType="INTEGER" column="user_id"/>
+        <result property="username" jdbcType="VARCHAR" column="username"/>
+        <result property="avatar" jdbcType="VARCHAR" column="avatar"/>
+        <result property="realName" jdbcType="VARCHAR" column="real_name"/>
+        <result property="gender" jdbcType="TINYINT" column="gender"/>
+        <result property="telephone" jdbcType="VARCHAR" column="telephone"/>
+        <result property="email" jdbcType="VARCHAR" column="email"/>
+        <result property="isEnable" jdbcType="BIT" column="is_enable"/>
+        <result property="roleId" jdbcType="INTEGER" column="role_id"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="lastLoginTime" jdbcType="BIGINT" column="last_login_time"/>
+        <result property="needChangePwd" jdbcType="BIT" column="need_change_pwd"/>
+    </resultMap>
+
+    <resultMap id="roleResultMap" type="com.armsmart.jupiter.bs.api.entity.SysUser" extends="baseResultMap">
+        <result property="sysRole.roleId" jdbcType="INTEGER" column="role_id"/>
+        <result property="sysRole.roleName" jdbcType="VARCHAR" column="role_name"/>
+        <result property="sysRole.roleLevel" jdbcType="INTEGER" column="role_level"/>
+        <result property="sysRole.roleType" jdbcType="INTEGER" column="role_type"/>
+    </resultMap>
+
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+	    <![CDATA[
+        user_id,
+        username,
+        avatar,
+        real_name,
+        gender,
+        telephone,
+        email,
+        is_enable,
+        role_id,
+        is_del,
+        create_time,
+        update_time,
+        last_login_time,
+        need_change_pwd
+        ]]>
+	</sql>
+
+    <sql id="relationColumns">
+	    <![CDATA[
+        u.user_id,
+        u.username,
+        u.avatar,
+        u.real_name,
+        u.gender,
+        u.telephone,
+        u.email,
+        u.is_enable,
+        u.role_id,
+        u.is_del,
+        u.create_time,
+        u.update_time,
+        u.last_login_time,
+        u.need_change_pwd,
+        r.role_name role_name,
+        r.role_level role_level,
+        r.role_type role_type
+        ]]>
+	</sql>
+    <!-- 插入数据 -->
+    <insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.SysUser" useGeneratedKeys="true"
+            keyProperty="userId">
+        insert into sys_user
+        (username, avatar, real_name, gender, telephone, email, is_enable, role_id, is_del, create_time, update_time,
+         last_login_time, need_change_pwd)
+        values (#{username,jdbcType=VARCHAR},
+                #{avatar,jdbcType=VARCHAR},
+                #{realName,jdbcType=VARCHAR},
+                #{gender,jdbcType=TINYINT},
+                #{telephone,jdbcType=VARCHAR},
+                #{email,jdbcType=VARCHAR},
+                #{isEnable,jdbcType=BIT},
+                #{roleId,jdbcType=INTEGER},
+                #{isDel,jdbcType=BIT},
+                #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT},
+                #{lastLoginTime,jdbcType=BIGINT},
+                #{needChangePwd,jdbcType=BIT})
+    </insert>
+    <!-- 更新数据 包含null-->
+    <update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.SysUser">
+        update sys_user
+        <set>
+            username = #{username,jdbcType=VARCHAR},
+            avatar = #{avatar,jdbcType=VARCHAR},
+            real_name = #{realName,jdbcType=VARCHAR},
+            gender = #{gender,jdbcType=TINYINT},
+            telephone = #{telephone,jdbcType=VARCHAR},
+            email = #{email,jdbcType=VARCHAR},
+            is_enable = #{isEnable,jdbcType=BIT},
+            role_id = #{roleId,jdbcType=INTEGER},
+            is_del = #{isDel,jdbcType=BIT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            last_login_time = #{lastLoginTime,jdbcType=BIGINT},
+            need_change_pwd = #{needChangePwd,jdbcType=BIT}
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+    <!-- 更新数据，不包含null -->
+    <update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.SysUser">
+        update sys_user
+        <set>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                gender = #{gender,jdbcType=TINYINT},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="isEnable != null">
+                is_enable = #{isEnable,jdbcType=BIT},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime,jdbcType=BIGINT},
+            </if>
+            <if test="needChangePwd != null">
+                need_change_pwd = #{needChangePwd,jdbcType=BIT}
+            </if>
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 主键条件查询 -->
+    <select id="selectById" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user
+        WHERE is_del = 0 and user_id = #{userId}
+    </select>
+
+    <!-- 用户名条件查询 -->
+    <select id="selectByUsername" resultMap="baseResultMap">
+        SELECT
+        <include refid="columns"/>
+        FROM sys_user
+        WHERE is_del = 0 and username = #{username}
+    </select>
+
+    <!-- 列表条件查询count -->
+    <select id="selectList_COUNT" resultType="java.lang.Long">
+        SELECT count(*)
+        FROM sys_user u left join sys_role r
+        ON u.role_id = r.role_id
+        <include refid="whereSql"/>
+    </select>
+
+    <!-- 列表条件查询 -->
+    <select id="selectList" resultMap="roleResultMap">
+        SELECT
+        <include refid="relationColumns"/>
+        FROM sys_user u left join sys_role r
+        ON u.role_id = r.role_id and r.is_del = 0
+        <include refid="whereSql"/>
+        <include refid="orderSql"/>
+    </select>
+
+    <sql id="whereSql">
+        <where>
+            <if test="userId != null">
+                AND u.user_id = #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username like concat('%',#{username},'%')
+            </if>
+            <if test="realName != null and realName != ''">
+                AND u.real_name like concat('%',#{realName},'%')
+            </if>
+            <if test="gender != null">
+                AND u.gender = #{gender}
+            </if>
+            <if test="telephone != null and telephone != ''">
+                AND u.telephone like concat('%',#{telephone},'%')
+            </if>
+            <if test="email != null and email != ''">
+                AND u.email like concat('%',#{email},'%')
+            </if>
+            <if test="isEnable != null">
+                AND u.is_enable = #{isEnable}
+            </if>
+            <if test="roleId != null">
+                AND u.role_id = #{roleId}
+            </if>
+            <if test="roleType != null">
+                AND r.role_type = #{roleType}
+            </if>
+            <if test="isDel != null">
+                AND u.is_del = #{isDel}
+            </if>
+        </where>
+    </sql>
+    <sql id="orderSql">
+        <choose>
+            <when test="orderBy != null and orderBy != ''">
+                ORDER BY
+                <if test="orderBy == 'userId'">
+                    u.user_id ${orderSort}
+                </if>
+                <if test="orderBy == 'username'">
+                    u.username ${orderSort}
+                </if>
+                <if test="orderBy == 'realName'">
+                    u.real_name ${orderSort}
+                </if>
+                <if test="orderBy == 'gender'">
+                    u.gender ${orderSort}
+                </if>
+                <if test="orderBy == 'telephone'">
+                    u.telephone ${orderSort}
+                </if>
+                <if test="orderBy == 'email'">
+                    u.email ${orderSort}
+                </if>
+                <if test="orderBy == 'isEnable'">
+                    u.is_enable ${orderSort}
+                </if>
+                <if test="orderBy == 'roleId'">
+                    u.role_id ${orderSort}
+                </if>
+                <if test="orderBy == 'isDel'">
+                    u.is_del ${orderSort}
+                </if>
+                <if test="orderBy == 'createTime'">
+                    u.create_time ${orderSort}
+                </if>
+                <if test="orderBy == 'updateTime'">
+                    u.update_time ${orderSort}
+                </if>
+                <if test="orderBy == 'lastLoginTime'">
+                    u.last_login_time ${orderSort}
+                </if>
+                <if test="orderBy == 'needChangePwd'">
+                    u.need_change_pwd ${orderSort}
+                </if>
+            </when>
+            <otherwise>
+                order by u.create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+</mapper>
+

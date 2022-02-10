@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.UserInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.UserInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="nickname" jdbcType="VARCHAR" column="nickname"/>
+        <result property="avatar" jdbcType="VARCHAR" column="avatar"/>
+        <result property="realName" jdbcType="VARCHAR" column="real_name"/>
+        <result property="email" jdbcType="VARCHAR" column="email"/>
+        <result property="registerTime" jdbcType="BIGINT" column="register_time"/>
+        <result property="mobile" jdbcType="VARCHAR" column="mobile"/>
+        <result property="isEnable" jdbcType="BIT" column="is_enable"/>
+		<result property="registrationId" jdbcType="VARCHAR" column="registration_id"/>
+		<result property="platform" jdbcType="INTEGER" column="platform"/>
+		<result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+		<result property="userType" jdbcType="INTEGER" column="user_type"/>
+		<result property="accountRegisterStatus" jdbcType="INTEGER" column="account_register_status"/>
+		<result property="deposit" jdbcType="BIGINT" column="deposit"/>
+		<result property="isDel" jdbcType="BIT" column="is_del"/>
+		<result property="authCode" jdbcType="VARCHAR" column="auth_code"/>
+		<result property="authDesc" jdbcType="VARCHAR" column="auth_desc"/>
+		<result property="tlUserId" jdbcType="VARCHAR" column="tl_user_id"/>
+		<result property="contractNo" jdbcType="VARCHAR" column="contractNo"/>
+		<result property="isSetPwd" jdbcType="BIT" column="is_setPwd"/>
+		<collection property="checkStatus" column="id" ofType="java.lang.Integer" select="selectCheckStatusByUserId"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,nickname,avatar,real_name,email,register_time,mobile,is_enable,registration_id,platform,user_type,update_time,account_register_status,deposit,is_del,auth_code,auth_desc,tl_user_id,contractNo,is_setPwd
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.UserInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into user_info
+		(nickname,avatar,real_name,email,register_time,mobile,is_enable,registration_id,platform,update_time,user_type,account_register_status,deposit,is_del,auth_code,auth_desc)
+		values (
+		#{nickname,jdbcType=VARCHAR},
+		#{avatar,jdbcType=VARCHAR},
+		#{realName,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR},
+		#{registerTime,jdbcType=BIGINT},
+		#{mobile,jdbcType=VARCHAR},
+		#{isEnable,jdbcType=BIT},
+		#{registrationId,jdbcType=VARCHAR},
+		#{platform,jdbcType=INTEGER},
+		#{updateTime,jdbcType=BIGINT},
+		#{userType,jdbcType=INTEGER},
+		#{accountRegisterStatus,jdbcType=INTEGER},
+		#{deposit,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT},
+		#{authCode,jdbcType=VARCHAR},
+		#{authDesc,jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.UserInfo" >
+		update user_info
+		<set>
+			nickname = #{nickname,jdbcType=VARCHAR},
+			avatar = #{avatar,jdbcType=VARCHAR},
+			real_name = #{realName,jdbcType=VARCHAR},
+			email = #{email,jdbcType=VARCHAR},
+			register_time = #{registerTime,jdbcType=BIGINT},
+			mobile = #{mobile,jdbcType=VARCHAR},
+			is_enable = #{isEnable,jdbcType=BIT},
+			registration_id = #{registrationId,jdbcType=VARCHAR},
+			platform = #{platform,jdbcType=INTEGER},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			user_type = #{userType,jdbcType=INTEGER},
+			account_register_status = #{accountRegisterStatus,jdbcType=INTEGER},
+			deposit = #{deposit,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT},
+			auth_code = #{authCode,jdbcType=VARCHAR},
+			auth_desc = #{authDesc,jdbcType=VARCHAR}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.UserInfo" >
+		update user_info t
+		<set>
+			<if test="nickname != null">
+				nickname = #{nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="avatar != null">
+				avatar = #{avatar,jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				real_name = #{realName,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="registerTime != null">
+				register_time = #{registerTime,jdbcType=BIGINT},
+			</if>
+			<if test="mobile != null">
+				mobile = #{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="isEnable != null">
+				is_enable = #{isEnable,jdbcType=BIT},
+			</if>
+			<if test="registrationId != null">
+				registration_id = #{registrationId,jdbcType=BIT},
+			</if>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=INTEGER},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="userType != null">
+				user_type =  #{userType,jdbcType=INTEGER},
+			</if>
+
+			<if test="accountRegisterStatus != null">
+				account_register_status =  #{accountRegisterStatus,jdbcType=INTEGER},
+			</if>
+
+			<if test="deposit != null">
+				deposit = #{deposit,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT},
+			</if>
+			<if test="authCode != null">
+				auth_code = #{authCode,jdbcType=VARCHAR},
+			</if>
+			<if test="authDesc != null">
+				auth_desc = #{authDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="tlUserId != null">
+				tl_user_id = #{tlUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="contractNo != null">
+				contractNo = #{contractNo,jdbcType=VARCHAR},
+			</if>
+			<if test="isSetPwd != null">
+				is_setPwd = #{isSetPwd,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_info
+		WHERE id = #{id}
+		and is_del  =  0
+	</select>
+
+	<!-- 主键条件查询 -->
+	<select id="selectByIdIncludeDel" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 根据用户查询资质认证状态 -->
+	<select id="selectCheckStatusByUserId" resultType="java.lang.Integer">
+		select
+			check_status
+		from user_title_info
+		WHERE is_del = 0 and user_id = #{userId}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from user_info
+		<include refid="whereSql"/>
+	</select>
+
+	<select id="selectByMobile" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_info
+		WHERE mobile = #{mobile} and is_del = 0
+	</select>
+
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="nickname != null and nickname != ''">
+				and nickname like concat('%',#{nickname},'%')
+			</if>
+			<if test="avatar != null and avatar != ''">
+				and avatar = #{avatar}
+			</if>
+			<if test="realName != null and realName != ''">
+				and real_name like concat('%',#{realName},'%')
+			</if>
+			<if test="email != null and email != ''">
+				and email = #{email}
+			</if>
+			<if test="registerTime != null">
+				and register_time = #{registerTime}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				and mobile like concat('%',#{mobile},'%')
+			</if>
+			<if test="isEnable != null">
+				and is_enable = #{isEnable}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="userType != null">
+				and user_type = #{userType}
+			</if>
+			<if test="accountRegisterStatus != null">
+				and account_register_status = #{accountRegisterStatus}
+			</if>
+			<if test="deposit != null">
+				and deposit = #{deposit,jdbcType=BIGINT}
+			</if>
+
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'nickname'">
+				nickname ${orderSort}
+				</if>
+		    	<if test="orderBy == 'avatar'">
+				avatar ${orderSort}
+				</if>
+		    	<if test="orderBy == 'realName'">
+				real_name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'email'">
+				email ${orderSort}
+				</if>
+		    	<if test="orderBy == 'registerTime'">
+				register_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'mobile'">
+				mobile ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isEnable'">
+				is_enable ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+				<if test="orderBy == 'userType'">
+					user_type ${orderSort}
+				</if>
+				<if test="orderBy == 'accountRegisterStatus'">
+					account_register_status ${orderSort}
+				</if>
+
+				<if test="orderBy == 'deposit'">
+					deposit ${orderSort}
+				</if>
+
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by register_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

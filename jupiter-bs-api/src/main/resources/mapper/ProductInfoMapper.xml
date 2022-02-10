@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.ProductInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.ProductInfo">
+        <result property="id" jdbcType="BIGINT" column="id"/>
+        <result property="name" jdbcType="VARCHAR" column="name"/>
+        <result property="typeLevelOne" jdbcType="INTEGER" column="type_level_one"/>
+        <result property="typeLevelTwo" jdbcType="INTEGER" column="type_level_two"/>
+        <result property="author" jdbcType="VARCHAR" column="author"/>
+        <result property="owner" jdbcType="VARCHAR" column="owner"/>
+        <result property="serialNum" jdbcType="VARCHAR" column="serial_num"/>
+        <result property="description" jdbcType="VARCHAR" column="description"/>
+        <result property="specs" jdbcType="VARCHAR" column="specs"/>
+        <result property="stock" jdbcType="INTEGER" column="stock"/>
+        <result property="putOn" jdbcType="BIT" column="put_on"/>
+        <result property="auditStatus" jdbcType="INTEGER" column="audit_status"/>
+        <result property="auditComments" jdbcType="VARCHAR" column="audit_comments"/>
+        <result property="putOnTime" jdbcType="BIGINT" column="put_on_time"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,name,type_level_one,type_level_two,author,owner,serial_num,description,specs,stock,put_on,audit_status,audit_comments,put_on_time,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.ProductInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into product_info
+		(name,type_level_one,type_level_two,author,owner,serial_num,description,specs,stock,put_on,audit_status,audit_comments,put_on_time,create_time,update_time,is_del)
+		values (
+		#{name,jdbcType=VARCHAR},
+		#{typeLevelOne,jdbcType=INTEGER},
+		#{typeLevelTwo,jdbcType=INTEGER},
+		#{author,jdbcType=VARCHAR},
+		#{owner,jdbcType=VARCHAR},
+		#{serialNum,jdbcType=VARCHAR},
+		#{description,jdbcType=VARCHAR},
+		#{specs,jdbcType=VARCHAR},
+		#{stock,jdbcType=INTEGER},
+		#{putOn,jdbcType=BIT},
+		#{auditStatus,jdbcType=INTEGER},
+		#{auditComments,jdbcType=VARCHAR},
+		#{putOnTime,jdbcType=BIGINT},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.ProductInfo" >
+		update product_info
+		<set>
+			name = #{name,jdbcType=VARCHAR},
+			type_level_one = #{typeLevelOne,jdbcType=INTEGER},
+			type_level_two = #{typeLevelTwo,jdbcType=INTEGER},
+			author = #{author,jdbcType=VARCHAR},
+			owner = #{owner,jdbcType=VARCHAR},
+			serial_num = #{serialNum,jdbcType=VARCHAR},
+			description = #{description,jdbcType=VARCHAR},
+			specs = #{specs,jdbcType=VARCHAR},
+			stock = #{stock,jdbcType=INTEGER},
+			put_on = #{putOn,jdbcType=BIT},
+			audit_status = #{auditStatus,jdbcType=INTEGER},
+			audit_comments = #{auditComments,jdbcType=VARCHAR},
+			put_on_time = #{putOnTime,jdbcType=BIGINT},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.ProductInfo" >
+		update product_info
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="typeLevelOne != null">
+				type_level_one = #{typeLevelOne,jdbcType=INTEGER},
+			</if>
+			<if test="typeLevelTwo != null">
+				type_level_two = #{typeLevelTwo,jdbcType=INTEGER},
+			</if>
+			<if test="author != null">
+				author = #{author,jdbcType=VARCHAR},
+			</if>
+			<if test="owner != null">
+				owner = #{owner,jdbcType=VARCHAR},
+			</if>
+			<if test="serialNum != null">
+				serial_num = #{serialNum,jdbcType=VARCHAR},
+			</if>
+			<if test="description != null">
+				description = #{description,jdbcType=VARCHAR},
+			</if>
+			<if test="specs != null">
+				specs = #{specs,jdbcType=VARCHAR},
+			</if>
+			<if test="stock != null">
+				stock = #{stock,jdbcType=INTEGER},
+			</if>
+			<if test="putOn != null">
+				put_on = #{putOn,jdbcType=BIT},
+			</if>
+			<if test="auditStatus != null">
+				audit_status = #{auditStatus,jdbcType=INTEGER},
+			</if>
+			<if test="auditComments != null">
+				audit_comments = #{auditComments,jdbcType=VARCHAR},
+			</if>
+			<if test="putOnTime != null">
+				put_on_time = #{putOnTime,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from product_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from product_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from product_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				and name = #{name}
+			</if>
+			<if test="typeLevelOne != null">
+				and type_level_one = #{typeLevelOne}
+			</if>
+			<if test="typeLevelTwo != null">
+				and type_level_two = #{typeLevelTwo}
+			</if>
+			<if test="author != null and author != ''">
+				and author = #{author}
+			</if>
+			<if test="owner != null and owner != ''">
+				and owner = #{owner}
+			</if>
+			<if test="serialNum != null and serialNum != ''">
+				and serial_num = #{serialNum}
+			</if>
+			<if test="description != null and description != ''">
+				and description = #{description}
+			</if>
+			<if test="specs != null and specs != ''">
+				and specs = #{specs}
+			</if>
+			<if test="stock != null">
+				and stock = #{stock}
+			</if>
+			<if test="putOn != null">
+				and put_on = #{putOn}
+			</if>
+			<if test="auditStatus != null">
+				and audit_status = #{auditStatus}
+			</if>
+			<if test="auditComments != null and auditComments != ''">
+				and audit_comments = #{auditComments}
+			</if>
+			<if test="putOnTime != null">
+				and put_on_time = #{putOnTime}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'name'">
+				name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'typeLevelOne'">
+				type_level_one ${orderSort}
+				</if>
+		    	<if test="orderBy == 'typeLevelTwo'">
+				type_level_two ${orderSort}
+				</if>
+		    	<if test="orderBy == 'author'">
+				author ${orderSort}
+				</if>
+		    	<if test="orderBy == 'owner'">
+				owner ${orderSort}
+				</if>
+		    	<if test="orderBy == 'serialNum'">
+				serial_num ${orderSort}
+				</if>
+		    	<if test="orderBy == 'description'">
+				description ${orderSort}
+				</if>
+		    	<if test="orderBy == 'specs'">
+				specs ${orderSort}
+				</if>
+		    	<if test="orderBy == 'stock'">
+				stock ${orderSort}
+				</if>
+		    	<if test="orderBy == 'putOn'">
+				put_on ${orderSort}
+				</if>
+		    	<if test="orderBy == 'auditStatus'">
+				audit_status ${orderSort}
+				</if>
+		    	<if test="orderBy == 'auditComments'">
+				audit_comments ${orderSort}
+				</if>
+		    	<if test="orderBy == 'putOnTime'">
+				put_on_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.RandSeedMapper">
+    <resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.RandSeedInfo">
+        <result property="contractAddr" jdbcType="VARCHAR" column="contract_addr"/>
+        <result property="seed" jdbcType="BIGINT" column="seed"/>
+    </resultMap>
+
+
+    <!-- 插入数据 -->
+    <insert id="insert" parameterType="java.lang.Integer">
+		insert into rand_seed_info
+		(contract_addr,seed)
+		values (
+		${contractAddr,jdbcType=VARCHAR},
+        1
+		)
+	</insert>
+
+    <select id="ifExeist" resultType="java.lang.Long">
+        select count(*) from rand_seed_info
+        where contract_addr = #{contractAddr}
+    </select>
+
+    <select id="getSeed" parameterType="java.lang.Long">
+        select seed from rand_seed_info
+        where  contract_addr = #{contractAddr};
+    </select>
+
+    <update id="update" parameterType="java.lang.Integer">
+        update rand_seed_info t set t.seed = t.seed + 1
+        where contract_addr={contractAddr}
+    </update>
+
+</mapper>
+

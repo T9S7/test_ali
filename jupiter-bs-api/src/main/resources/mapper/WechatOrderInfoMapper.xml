@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.WechatOrderInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.WechatOrderInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="deviceInfo" jdbcType="VARCHAR" column="device_info"/>
+        <result property="openid" jdbcType="VARCHAR" column="openid"/>
+        <result property="isSubscribe" jdbcType="VARCHAR" column="is_subscribe"/>
+        <result property="tradeType" jdbcType="VARCHAR" column="trade_type"/>
+        <result property="tradeState" jdbcType="VARCHAR" column="trade_state"/>
+        <result property="bankType" jdbcType="VARCHAR" column="bank_type"/>
+        <result property="totalFee" jdbcType="INTEGER" column="total_fee"/>
+        <result property="feeType" jdbcType="VARCHAR" column="fee_type"/>
+        <result property="cashFee" jdbcType="INTEGER" column="cash_fee"/>
+        <result property="cashFeeType" jdbcType="VARCHAR" column="cash_fee_type"/>
+        <result property="settlementTotalFee" jdbcType="INTEGER" column="settlement_total_fee"/>
+        <result property="couponFee" jdbcType="INTEGER" column="coupon_fee"/>
+        <result property="couponCount" jdbcType="INTEGER" column="coupon_count"/>
+        <result property="couponIdNo" jdbcType="VARCHAR" column="coupon_id_no"/>
+        <result property="couponTypeNo" jdbcType="VARCHAR" column="coupon_type_no"/>
+        <result property="couponFeeNo" jdbcType="VARCHAR" column="coupon_fee_no"/>
+        <result property="transactionId" jdbcType="VARCHAR" column="transaction_id"/>
+        <result property="outTradeNo" jdbcType="VARCHAR" column="out_trade_no"/>
+        <result property="attach" jdbcType="VARCHAR" column="attach"/>
+        <result property="timeEnd" jdbcType="VARCHAR" column="time_end"/>
+        <result property="tradeStateDesc" jdbcType="VARCHAR" column="trade_state_desc"/>
+		<result property="returnMsg" jdbcType="VARCHAR" column="return_msg"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="updateTime" jdbcType="BIGINT" column="update_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,device_info,openid,is_subscribe,trade_type,trade_state,bank_type,total_fee,fee_type,cash_fee,cash_fee_type,settlement_total_fee,coupon_fee,coupon_count,coupon_id_no,coupon_type_no,coupon_fee_no,transaction_id,out_trade_no,attach,time_end,trade_state_desc,return_msg,create_time,update_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.WechatOrderInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_order_info
+		(device_info,openid,is_subscribe,trade_type,trade_state,bank_type,total_fee,fee_type,cash_fee,cash_fee_type,settlement_total_fee,coupon_fee,coupon_count,coupon_id_no,coupon_type_no,coupon_fee_no,transaction_id,out_trade_no,attach,time_end,trade_state_desc,return_msg,create_time,update_time,is_del)
+		values (
+		#{deviceInfo,jdbcType=VARCHAR},
+		#{openid,jdbcType=VARCHAR},
+		#{isSubscribe,jdbcType=VARCHAR},
+		#{tradeType,jdbcType=VARCHAR},
+		#{tradeState,jdbcType=VARCHAR},
+		#{bankType,jdbcType=VARCHAR},
+		#{totalFee,jdbcType=INTEGER},
+		#{feeType,jdbcType=VARCHAR},
+		#{cashFee,jdbcType=INTEGER},
+		#{cashFeeType,jdbcType=VARCHAR},
+		#{settlementTotalFee,jdbcType=INTEGER},
+		#{couponFee,jdbcType=INTEGER},
+		#{couponCount,jdbcType=INTEGER},
+		#{couponIdNo,jdbcType=VARCHAR},
+		#{couponTypeNo,jdbcType=VARCHAR},
+		#{couponFeeNo,jdbcType=VARCHAR},
+		#{transactionId,jdbcType=VARCHAR},
+		#{outTradeNo,jdbcType=VARCHAR},
+		#{attach,jdbcType=VARCHAR},
+		#{timeEnd,jdbcType=VARCHAR},
+		#{tradeStateDesc,jdbcType=VARCHAR},
+		#{returnMsg,jdbcType=VARCHAR},
+		#{createTime,jdbcType=BIGINT},
+		#{updateTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.WechatOrderInfo" >
+		update wechat_order_info
+		<set>
+			device_info = #{deviceInfo,jdbcType=VARCHAR},
+			openid = #{openid,jdbcType=VARCHAR},
+			is_subscribe = #{isSubscribe,jdbcType=VARCHAR},
+			trade_type = #{tradeType,jdbcType=VARCHAR},
+			trade_state = #{tradeState,jdbcType=VARCHAR},
+			bank_type = #{bankType,jdbcType=VARCHAR},
+			total_fee = #{totalFee,jdbcType=INTEGER},
+			fee_type = #{feeType,jdbcType=VARCHAR},
+			cash_fee = #{cashFee,jdbcType=INTEGER},
+			cash_fee_type = #{cashFeeType,jdbcType=VARCHAR},
+			settlement_total_fee = #{settlementTotalFee,jdbcType=INTEGER},
+			coupon_fee = #{couponFee,jdbcType=INTEGER},
+			coupon_count = #{couponCount,jdbcType=INTEGER},
+			coupon_id_no = #{couponIdNo,jdbcType=VARCHAR},
+			coupon_type_no = #{couponTypeNo,jdbcType=VARCHAR},
+			coupon_fee_no = #{couponFeeNo,jdbcType=VARCHAR},
+			transaction_id = #{transactionId,jdbcType=VARCHAR},
+			out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+			attach = #{attach,jdbcType=VARCHAR},
+			time_end = #{timeEnd,jdbcType=VARCHAR},
+			trade_state_desc = #{tradeStateDesc,jdbcType=VARCHAR},
+			return_msg = #{returnMsg,jdbcType=VARCHAR},
+			create_time = #{createTime,jdbcType=BIGINT},
+			update_time = #{updateTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.WechatOrderInfo" >
+		update wechat_order_info
+		<set>
+			<if test="deviceInfo != null">
+				device_info = #{deviceInfo,jdbcType=VARCHAR},
+			</if>
+			<if test="openid != null">
+				openid = #{openid,jdbcType=VARCHAR},
+			</if>
+			<if test="isSubscribe != null">
+				is_subscribe = #{isSubscribe,jdbcType=VARCHAR},
+			</if>
+			<if test="tradeType != null">
+				trade_type = #{tradeType,jdbcType=VARCHAR},
+			</if>
+			<if test="tradeState != null">
+				trade_state = #{tradeState,jdbcType=VARCHAR},
+			</if>
+			<if test="bankType != null">
+				bank_type = #{bankType,jdbcType=VARCHAR},
+			</if>
+			<if test="totalFee != null">
+				total_fee = #{totalFee,jdbcType=INTEGER},
+			</if>
+			<if test="feeType != null">
+				fee_type = #{feeType,jdbcType=VARCHAR},
+			</if>
+			<if test="cashFee != null">
+				cash_fee = #{cashFee,jdbcType=INTEGER},
+			</if>
+			<if test="cashFeeType != null">
+				cash_fee_type = #{cashFeeType,jdbcType=VARCHAR},
+			</if>
+			<if test="settlementTotalFee != null">
+				settlement_total_fee = #{settlementTotalFee,jdbcType=INTEGER},
+			</if>
+			<if test="couponFee != null">
+				coupon_fee = #{couponFee,jdbcType=INTEGER},
+			</if>
+			<if test="couponCount != null">
+				coupon_count = #{couponCount,jdbcType=INTEGER},
+			</if>
+			<if test="couponIdNo != null">
+				coupon_id_no = #{couponIdNo,jdbcType=VARCHAR},
+			</if>
+			<if test="couponTypeNo != null">
+				coupon_type_no = #{couponTypeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="couponFeeNo != null">
+				coupon_fee_no = #{couponFeeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="transactionId != null">
+				transaction_id = #{transactionId,jdbcType=VARCHAR},
+			</if>
+			<if test="outTradeNo != null">
+				out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="attach != null">
+				attach = #{attach,jdbcType=VARCHAR},
+			</if>
+			<if test="timeEnd != null">
+				time_end = #{timeEnd,jdbcType=VARCHAR},
+			</if>
+			<if test="tradeStateDesc != null">
+				trade_state_desc = #{tradeStateDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="returnMsg != null">
+				return_msg = #{returnMsg,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from wechat_order_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from wechat_order_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from wechat_order_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+
+	<select id="selectByTransactionId" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from wechat_order_info
+		WHERE transaction_id = #{transactionId}
+	</select>
+
+	<select id="selectByOutTradeNo" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from wechat_order_info
+		WHERE out_trade_no = #{outTradeNo}
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="deviceInfo != null and deviceInfo != ''">
+				and device_info = #{deviceInfo}
+			</if>
+			<if test="openid != null and openid != ''">
+				and openid = #{openid}
+			</if>
+			<if test="isSubscribe != null and isSubscribe != ''">
+				and is_subscribe = #{isSubscribe}
+			</if>
+			<if test="tradeType != null and tradeType != ''">
+				and trade_type = #{tradeType}
+			</if>
+			<if test="tradeState != null and tradeState != ''">
+				and trade_state = #{tradeState}
+			</if>
+			<if test="bankType != null and bankType != ''">
+				and bank_type = #{bankType}
+			</if>
+			<if test="totalFee != null">
+				and total_fee = #{totalFee}
+			</if>
+			<if test="feeType != null and feeType != ''">
+				and fee_type = #{feeType}
+			</if>
+			<if test="cashFee != null">
+				and cash_fee = #{cashFee}
+			</if>
+			<if test="cashFeeType != null and cashFeeType != ''">
+				and cash_fee_type = #{cashFeeType}
+			</if>
+			<if test="settlementTotalFee != null">
+				and settlement_total_fee = #{settlementTotalFee}
+			</if>
+			<if test="couponFee != null">
+				and coupon_fee = #{couponFee}
+			</if>
+			<if test="couponCount != null">
+				and coupon_count = #{couponCount}
+			</if>
+			<if test="couponIdNo != null and couponIdNo != ''">
+				and coupon_id_no = #{couponIdNo}
+			</if>
+			<if test="couponTypeNo != null and couponTypeNo != ''">
+				and coupon_type_no = #{couponTypeNo}
+			</if>
+			<if test="couponFeeNo != null and couponFeeNo != ''">
+				and coupon_fee_no = #{couponFeeNo}
+			</if>
+			<if test="transactionId != null and transactionId != ''">
+				and transaction_id = #{transactionId}
+			</if>
+			<if test="outTradeNo != null and outTradeNo != ''">
+				and out_trade_no = #{outTradeNo}
+			</if>
+			<if test="attach != null and attach != ''">
+				and attach = #{attach}
+			</if>
+			<if test="timeEnd != null and timeEnd != ''">
+				and time_end = #{timeEnd}
+			</if>
+			<if test="tradeStateDesc != null and tradeStateDesc != ''">
+				and trade_state_desc = #{tradeStateDesc}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="updateTime != null">
+				and update_time = #{updateTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'deviceInfo'">
+				device_info ${orderSort}
+				</if>
+		    	<if test="orderBy == 'openid'">
+				openid ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isSubscribe'">
+				is_subscribe ${orderSort}
+				</if>
+		    	<if test="orderBy == 'tradeType'">
+				trade_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'tradeState'">
+				trade_state ${orderSort}
+				</if>
+		    	<if test="orderBy == 'bankType'">
+				bank_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'totalFee'">
+				total_fee ${orderSort}
+				</if>
+		    	<if test="orderBy == 'feeType'">
+				fee_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cashFee'">
+				cash_fee ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cashFeeType'">
+				cash_fee_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'settlementTotalFee'">
+				settlement_total_fee ${orderSort}
+				</if>
+		    	<if test="orderBy == 'couponFee'">
+				coupon_fee ${orderSort}
+				</if>
+		    	<if test="orderBy == 'couponCount'">
+				coupon_count ${orderSort}
+				</if>
+		    	<if test="orderBy == 'couponIdNo'">
+				coupon_id_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'couponTypeNo'">
+				coupon_type_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'couponFeeNo'">
+				coupon_fee_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'transactionId'">
+				transaction_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'outTradeNo'">
+				out_trade_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'attach'">
+				attach ${orderSort}
+				</if>
+		    	<if test="orderBy == 'timeEnd'">
+				time_end ${orderSort}
+				</if>
+		    	<if test="orderBy == 'tradeStateDesc'">
+				trade_state_desc ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

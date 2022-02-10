@@ -1,0 +1,49 @@
+server:
+  port: 8080
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+#      config:
+#        server-addr: localhost:8848
+#        file-extension: yaml
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: '*'
+            allowedHeaders: '*'
+            allowedMethods: '*'
+            allowCredentials: true
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+      default-filters:
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/fallback
+        - name: Retry
+          args:
+            retries: 3
+            statuses: BAD_GATEWAY,BAD_REQUEST
+            methods: GET,POST
+      routes:
+        - name: system
+          uri: lb://jupiter-system:8081
+          predicates:
+            - Path=/system/**
+          filters:
+            - StripPrefix=1
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          #          semaphore:
+          #            maxConcurrentRequests: 1000
+          thread:
+            timeoutInMilliseconds: 3000

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.AccountCashDetailMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.AccountCashDetail">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="accountId" jdbcType="INTEGER" column="account_id"/>
+        <result property="tradeType" jdbcType="INTEGER" column="trade_type"/>
+        <result property="payee" jdbcType="VARCHAR" column="payee"/>
+        <result property="tradeTime" jdbcType="TIMESTAMP" column="trade_time"/>
+        <result property="tradeOrderNo" jdbcType="BIGINT" column="trade_order_no"/>
+        <result property="preAccountBalance" jdbcType="BIGINT" column="pre_account_balance"/>
+        <result property="tradeMoney" jdbcType="BIGINT" column="trade_money"/>
+        <result property="cashAccountBalance" jdbcType="BIGINT" column="cash_account_balance"/>
+        <result property="sellId" jdbcType="INTEGER" column="sell_id"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="isDel" jdbcType="BIT"  column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,account_id,trade_type,payee,trade_time,trade_order_no,pre_account_balance,trade_money,cash_account_balance,sell_id,create_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.AccountCashDetail" useGeneratedKeys="true" keyProperty="id">
+		insert into account_cash_detail
+		(account_id,trade_type,payee,trade_time,trade_order_no,pre_account_balance,trade_money,cash_account_balance,sell_id,create_time,is_del)
+		values (
+		#{accountId,jdbcType=INTEGER},
+		#{tradeType,jdbcType=INTEGER},
+		#{payee,jdbcType=VARCHAR},
+		#{tradeTime,jdbcType=TIMESTAMP},
+		#{tradeOrderNo,jdbcType=BIGINT},
+		#{preAccountBalance,jdbcType=BIGINT},
+		#{tradeMoney,jdbcType=BIGINT},
+		#{cashAccountBalance,jdbcType=BIGINT},
+		#{sellId,jdbcType=INTEGER},
+		#{createTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.AccountCashDetail" >
+		update account_cash_detail
+		<set>
+			account_id = #{accountId,jdbcType=INTEGER},
+			trade_type = #{tradeType,jdbcType=INTEGER},
+			payee = #{payee,jdbcType=VARCHAR},
+			trade_time = #{tradeTime,jdbcType=TIMESTAMP},
+			trade_order_no = #{tradeOrderNo,jdbcType=BIGINT},
+			pre_account_balance = #{preAccountBalance,jdbcType=BIGINT},
+			trade_money = #{tradeMoney,jdbcType=BIGINT},
+			cash_account_balance = #{cashAccountBalance,jdbcType=BIGINT},
+			sell_id = #{sellId,jdbcType=INTEGER},
+			create_time = #{createTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.AccountCashDetail" >
+		update account_cash_detail
+		<set>
+			<if test="accountId != null">
+				account_id = #{accountId,jdbcType=INTEGER},
+			</if>
+			<if test="tradeType != null">
+				trade_type = #{tradeType,jdbcType=INTEGER},
+			</if>
+			<if test="payee != null">
+				payee = #{payee,jdbcType=VARCHAR},
+			</if>
+			<if test="tradeTime != null">
+				trade_time = #{tradeTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tradeOrderNo != null">
+				trade_order_no = #{tradeOrderNo,jdbcType=BIGINT},
+			</if>
+			<if test="preAccountBalance != null">
+				pre_account_balance = #{preAccountBalance,jdbcType=BIGINT},
+			</if>
+			<if test="tradeMoney != null">
+				trade_money = #{tradeMoney,jdbcType=BIGINT},
+			</if>
+			<if test="cashAccountBalance != null">
+				cash_account_balance = #{cashAccountBalance,jdbcType=BIGINT},
+			</if>
+			<if test="sellId != null">
+				sell_id = #{sellId,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from account_cash_detail
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from account_cash_detail
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from account_cash_detail
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="accountId != null">
+				and account_id = #{accountId}
+			</if>
+			<if test="tradeType != null">
+				and trade_type = #{tradeType}
+			</if>
+			<if test="payee != null and payee != ''">
+				and payee = #{payee}
+			</if>
+			<if test="tradeOrderNo != null">
+				and trade_order_no = #{tradeOrderNo}
+			</if>
+			<if test="preAccountBalance != null">
+				and pre_account_balance = #{preAccountBalance}
+			</if>
+			<if test="tradeMoney != null">
+				and trade_money = #{tradeMoney}
+			</if>
+			<if test="cashAccountBalance != null">
+				and cash_account_balance = #{cashAccountBalance}
+			</if>
+			<if test="sellId != null">
+				and sell_id = #{sellId}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'accountId'">
+				account_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'tradeType'">
+				trade_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'payee'">
+				payee ${orderSort}
+				</if>
+		    	<if test="orderBy == 'tradeTime'">
+				trade_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'tradeOrderNo'">
+				trade_order_no ${orderSort}
+				</if>
+		    	<if test="orderBy == 'preAccountBalance'">
+				pre_account_balance ${orderSort}
+				</if>
+		    	<if test="orderBy == 'tradeMoney'">
+				trade_money ${orderSort}
+				</if>
+		    	<if test="orderBy == 'cashAccountBalance'">
+				cash_account_balance ${orderSort}
+				</if>
+		    	<if test="orderBy == 'sellId'">
+				sell_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.ContractInfoMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.ContractInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="nodeHost" jdbcType="VARCHAR" column="node_host"/>
+        <result property="contractName" jdbcType="VARCHAR" column="contract_name"/>
+        <result property="contractAddress" jdbcType="VARCHAR" column="contract_address"/>
+        <result property="contractOwner" jdbcType="VARCHAR" column="contract_owner"/>
+        <result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+        <result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+        <result property="randomSeed" jdbcType="BIGINT" column="random_seed"/>
+        <result property="channelName" jdbcType="VARCHAR" column="channel_name"/>
+        <result property="chainCodeId" jdbcType="VARCHAR" column="chain_code_id"/>
+        <result property="isHuaxiaCard" jdbcType="INTEGER" column="is_huaxia_card"/>
+        <result property="isUsed" jdbcType="BIT" column="is_used"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,node_host,contract_name,contract_address,contract_owner,create_time,update_time,random_seed,channel_name,chain_code_id,is_huaxia_card,is_used
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.ContractInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into contract_info
+		(node_host,contract_name,contract_address,contract_owner,create_time,update_time,random_seed,channel_name,chain_code_id,is_huaxia_card,is_used)
+		values (
+		#{nodeHost,jdbcType=VARCHAR},
+		#{contractName,jdbcType=VARCHAR},
+		#{contractAddress,jdbcType=VARCHAR},
+		#{contractOwner,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{randomSeed,jdbcType=BIGINT},
+		#{channelName,jdbcType=VARCHAR},
+		#{chainCodeId,jdbcType=VARCHAR},
+		#{isHuaxiaCard,jdbcType=INTEGER},
+		#{isUsed,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.ContractInfo" >
+		update contract_info
+		<set>
+			node_host = #{nodeHost,jdbcType=VARCHAR},
+			contract_name = #{contractName,jdbcType=VARCHAR},
+			contract_address = #{contractAddress,jdbcType=VARCHAR},
+			contract_owner = #{contractOwner,jdbcType=VARCHAR},
+			create_time = #{createTime,jdbcType=TIMESTAMP},
+			update_time = #{updateTime,jdbcType=TIMESTAMP},
+			random_seed = #{randomSeed,jdbcType=BIGINT},
+			channel_name = #{channelName,jdbcType=VARCHAR},
+			chain_code_id = #{chainCodeId,jdbcType=VARCHAR},
+			is_huaxia_card = #{isHuaxiaCard,jdbcType=INTEGER},
+			is_used = #{isUsed,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.ContractInfo" >
+		update contract_info
+		<set>
+			<if test="nodeHost != null">
+				node_host = #{nodeHost,jdbcType=VARCHAR},
+			</if>
+			<if test="contractName != null">
+				contract_name = #{contractName,jdbcType=VARCHAR},
+			</if>
+			<if test="contractAddress != null">
+				contract_address = #{contractAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="contractOwner != null">
+				contract_owner = #{contractOwner,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="randomSeed != null">
+				random_seed = #{randomSeed,jdbcType=BIGINT},
+			</if>
+			<if test="channelName != null">
+				channel_name = #{channelName,jdbcType=VARCHAR},
+			</if>
+			<if test="chainCodeId != null">
+				chain_code_id = #{chainCodeId,jdbcType=VARCHAR},
+			</if>
+			<if test="isHuaxiaCard != null">
+				is_huaxia_card = #{isHuaxiaCard,jdbcType=INTEGER},
+			</if>
+			<if test="isUsed != null">
+				is_used = #{isUsed,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<select id="nextDealAddr" resultType="java.lang.String">
+		select contract_address  FROM contract_info where is_used = 0 and contract_name  = "deal"
+			ORDER BY create_time desc limit 1
+	</select>
+
+	<update id="updateAddr" parameterType="com.armsmart.jupiter.bs.api.entity.ContractInfo">
+		update contract_info set is_used = 1 where contract_address = #{contractAddress}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from contract_info
+		WHERE id = #{id}
+	</select>
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from contract_info
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from contract_info
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+    
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="nodeHost != null and nodeHost != ''">
+				and node_host = #{nodeHost}
+			</if>
+			<if test="contractName != null and contractName != ''">
+				and contract_name = #{contractName}
+			</if>
+			<if test="contractAddress != null and contractAddress != ''">
+				and contract_address = #{contractAddress}
+			</if>
+			<if test="contractOwner != null and contractOwner != ''">
+				and contract_owner = #{contractOwner}
+			</if>
+			<if test="randomSeed != null">
+				and random_seed = #{randomSeed}
+			</if>
+			<if test="channelName != null and channelName != ''">
+				and channel_name = #{channelName}
+			</if>
+			<if test="chainCodeId != null and chainCodeId != ''">
+				and chain_code_id = #{chainCodeId}
+			</if>
+			<if test="isHuaxiaCard != null">
+				and is_huaxia_card = #{isHuaxiaCard}
+			</if>
+			<if test="isUsed != null">
+				and is_used = #{isUsed}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'nodeHost'">
+				node_host ${orderSort}
+				</if>
+		    	<if test="orderBy == 'contractName'">
+				contract_name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'contractAddress'">
+				contract_address ${orderSort}
+				</if>
+		    	<if test="orderBy == 'contractOwner'">
+				contract_owner ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'updateTime'">
+				update_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'randomSeed'">
+				random_seed ${orderSort}
+				</if>
+		    	<if test="orderBy == 'channelName'">
+				channel_name ${orderSort}
+				</if>
+		    	<if test="orderBy == 'chainCodeId'">
+				chain_code_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isHuaxiaCard'">
+				is_huaxia_card ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isUsed'">
+				is_used ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+

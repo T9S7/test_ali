@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.armsmart.jupiter.bs.api.dao.UserCompanyMapper">
+
+	<resultMap id="baseResultMap" type="com.armsmart.jupiter.bs.api.entity.UserCompany">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="userId" jdbcType="INTEGER" column="user_id"/>
+        <result property="companyId" jdbcType="INTEGER" column="company_id"/>
+        <result property="userType" jdbcType="INTEGER" column="user_type"/>
+        <result property="isCompanyOfficial" jdbcType="BIT" column="is_company_official"/>
+        <result property="createTime" jdbcType="BIGINT" column="create_time"/>
+        <result property="isDel" jdbcType="BIT" column="is_del"/>
+	</resultMap>
+
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="columns">
+	    <![CDATA[
+		id,user_id,company_id,user_type,is_company_official,create_time,is_del
+	    ]]>
+	</sql>
+	<!-- 插入数据 -->
+	<insert id="insert" parameterType="com.armsmart.jupiter.bs.api.entity.UserCompany" useGeneratedKeys="true" keyProperty="id">
+		insert into user_company
+		(user_id,company_id,user_type,is_company_official,create_time,is_del)
+		values (
+		#{userId,jdbcType=INTEGER},
+		#{companyId,jdbcType=INTEGER},
+		#{userType,jdbcType=INTEGER},
+		#{isCompanyOfficial,jdbcType=BIT},
+		#{createTime,jdbcType=BIGINT},
+		#{isDel,jdbcType=BIT}
+		)
+	</insert>
+	<!-- 更新数据 包含null-->
+	<update id="update" parameterType="com.armsmart.jupiter.bs.api.entity.UserCompany" >
+		update user_company
+		<set>
+			user_id = #{userId,jdbcType=INTEGER},
+			company_id = #{companyId,jdbcType=INTEGER},
+			user_type = #{userType,jdbcType=INTEGER},
+			is_company_official = #{isCompanyOfficial,jdbcType=BIT},
+			create_time = #{createTime,jdbcType=BIGINT},
+			is_del = #{isDel,jdbcType=BIT}
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 更新数据，不包含null -->
+	<update id="updateSelective" parameterType="com.armsmart.jupiter.bs.api.entity.UserCompany" >
+		update user_company
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="companyId != null">
+				company_id = #{companyId,jdbcType=INTEGER},
+			</if>
+			<if test="userType != null">
+				user_type = #{userType,jdbcType=INTEGER},
+			</if>
+			<if test="isCompanyOfficial != null">
+				is_company_official = #{isCompanyOfficial,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=BIGINT},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=BIT}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 主键条件查询 -->
+	<select id="selectById" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_company
+		WHERE id = #{id}
+	</select>
+
+	<select id="selectByUserId" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_company
+		where user_id = #{userId}
+		and is_del = 0
+	</select>
+
+
+	<!-- 列表条件查询count -->
+	<select id="selectList_COUNT" resultType="java.lang.Long">
+		select count(*)
+		from user_company
+		<include refid="whereSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectList" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_company
+		<include refid="whereSql"/>
+		<include refid="orderSql"/>
+	</select>
+
+	<!-- 列表条件查询 -->
+	<select id="selectListByCompanyId" resultMap="baseResultMap">
+		select
+		<include refid="columns"/>
+		from user_company
+		where company_id = #{companyId}
+		and is_del = 0
+
+	</select>
+
+    <sql id="whereSql">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="companyId != null">
+				and company_id = #{companyId}
+			</if>
+			<if test="userType != null">
+				and user_type = #{userType}
+			</if>
+			<if test="isCompanyOfficial != null">
+				and is_company_official = #{isCompanyOfficial}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+		</where>
+	</sql>
+    <sql id="orderSql">
+    	<choose>
+			<when test="orderBy != null and orderBy != ''">
+				order by 
+		    	<if test="orderBy == 'id'">
+				id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userId'">
+				user_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'companyId'">
+				company_id ${orderSort}
+				</if>
+		    	<if test="orderBy == 'userType'">
+				user_type ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isCompanyOfficial'">
+				is_company_official ${orderSort}
+				</if>
+		    	<if test="orderBy == 'createTime'">
+				create_time ${orderSort}
+				</if>
+		    	<if test="orderBy == 'isDel'">
+				is_del ${orderSort}
+				</if>
+			</when>
+			<otherwise>
+				order by create_time desc
+			</otherwise>
+		</choose>
+    </sql>
+</mapper>
+
