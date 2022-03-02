@@ -47,7 +47,7 @@ public class UserAuthenticationService {
 //    @Autowired(required = false)
 //    private BlockChainService blockChainService;
 
-    DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAITig6PhDgFJHC", "FXj8bGOXplG1whPUNIwA3HcJETV7Cv");
+    DefaultProfile profile = DefaultProfile.getProfile("XXX", "XXX", "XXX");
     /**
      * 分页查询
      *
